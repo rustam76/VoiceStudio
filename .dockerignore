@@ -36,3 +36,27 @@ electron/release/
 .DS_Store
 .vscode/
 .idea/
+
+# Online deployment: never send secrets, mobile toolchains or desktop bundles.
+.env
+.env.*
+!.env.example
+**/node_modules/
+**/.venv/
+.agents/
+.claude/
+.codex/
+mobile/
+native/
+store/
+snap/
+notebooks/
+omnivoice-gallery/
+electron/src/main/
+electron/src/preload/
+**/huggingface/
+**/*.onnx
+**/*.safetensors
+**/*.gguf
+**/*.pt
+**/*.pth

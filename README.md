@@ -1,231 +1,177 @@
-<div align="center">
-  <h1><sub><img src="docs/logo.png" alt="" width="36" height="36" /></sub> VoiceStudio</h1>
-  <p>
-    <a href="https://trendshift.io/repositories/28176?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-28176" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/28176" alt="Trendshift badge showing where VoiceStudio ranks among trending repositories" width="220" height="48" /></a>
-  </p>
-  <h2>AI voice studio. On your device.</h2>
-  <h3>Clone, design, dub, dictate, transcribe and narrate in 646 languages.</h3>
-  <p>Runs on your laptop, desktop, servers, phone, tablets and more</p>
-  <p>
-    <a href="https://voicestudio.sh/?utm_source=github&utm_medium=readme&utm_campaign=project">Website</a> ·
-    <a href="https://github.com/debpalash/VoiceStudio/releases/latest">Download</a> ·
-    <a href="#get-started">Get started</a> ·
-    <a href="#documentation">Docs</a> ·
-    <a href="https://discord.gg/bzQavDfVV9">Discord</a> ·
-    <a href="docs/readme/README_CN.md">简体中文</a> · <a href="docs/readme/README_JA.md">日本語</a> · <a href="docs/readme/README_KO.md">한국어</a> · <a href="docs/readme/README_RU.md">Русский</a>
-  </p>
-  <p>
-    <a href="https://github.com/debpalash/VoiceStudio/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/debpalash/VoiceStudio/ci.yml?branch=main&amp;style=flat-square&amp;label=build&amp;labelColor=27272a" alt="CI" /></a>
-    <a href="https://github.com/debpalash/VoiceStudio/releases/latest"><img src="https://img.shields.io/github/v/release/debpalash/VoiceStudio?style=flat-square&amp;labelColor=27272a&amp;color=52525b" alt="Latest release" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-52525b?style=flat-square&amp;labelColor=27272a" alt="AGPL-3.0" /></a>
-    <a href="https://supermetry.com"><img src="https://app.supermetry.com/px/zfjiv7psp4ed.svg?c=VoiceStudio" alt="views" /></a>
-  </p>
-  <p>
-    <sub>Strategic sponsors</sub><br />
-    <a href="https://github.com/debpalash/OpenGTM?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/opengtm-dark.svg" /><img src="docs/sponsors/opengtm.svg" alt="OpenGTM" height="32" align="middle" /></picture></a>
-    <a href="https://github.com/debpalash/Opal?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/opal-dark.svg" /><img src="docs/sponsors/opal.svg" alt="Opal" height="32" align="middle" /></picture></a>
-    <a href="https://github.com/velixio/supermetry?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/supermetry-dark.svg" /><img src="docs/sponsors/supermetry.svg" alt="Supermetry" height="32" align="middle" /></picture></a>
-  </p>
-  <p>
-    <sub>Special sponsor</sub><br />
-    <a href="https://app.spicrawl.com/signup?utm_source=voicestudio&amp;utm_medium=github_readme&amp;utm_campaign=special_sponsor&amp;utm_content=logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/spicrawl-dark.svg" /><img src="docs/sponsors/spicrawl.svg" alt="Spicrawl" height="32" align="middle" /></picture></a>
-  </p>
-</div>
+# VoiceStudio Online
 
-<p align="center">
-  <a href="docs/media/electron/voicestudio.mp4">
-    <picture>
-      <source media="(prefers-reduced-motion: reduce) and (max-width: 768px)" srcset="docs/media/electron/voice-cloning.webp" />
-      <source media="(prefers-reduced-motion: reduce)" srcset="docs/media/electron/voice-cloning.png" />
-      <img src="docs/media/electron/voicestudio.gif" alt="A tour of the app: voice cloning, voice design, dubbing, and model management" width="100%" />
-    </picture>
-  </a><br />
-  <sub>Demo workspace · Default dark theme · <a href="docs/media/electron/voicestudio.mp4">Watch the HD tour</a></sub>
-</p>
+Fork pribadi [VoiceStudio](https://github.com/debpalash/VoiceStudio) untuk narasi Indonesia melalui browser, API, dan MCP. Inferensi berjalan lokal di server tanpa API TTS berbayar. Target deployment aktif: **Linux + Docker**, satu worker dan satu engine CPU. Dokumentasi asli: [README.upstream.md](README.upstream.md).
 
-<p align="center">
-  <a href="https://github.com/debpalash/VoiceStudio/releases/latest"><img src="https://img.shields.io/badge/Download-993f61?style=for-the-badge&amp;logo=github&amp;logoColor=ffffff" alt="Download" height="24" /></a>
-  <a href="#get-started"><img src="https://img.shields.io/badge/Get%20started-27272a?style=for-the-badge" alt="Get started" height="24" /></a>
-</p>
+Memakai ulang router `/generate`, engine Supertonic, SQLite/audio, autentikasi, komponen React dan MCP upstream. Versi tetap mengikuti package.json, tanpa version bump.
 
-## What you can do
+## Fitur dan batas scope
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <a href="docs/media/electron/voice-cloning.png"><img src="docs/media/electron/voice-cloning.webp" alt="Voice cloning workspace with the bundled demo voice" width="100%" /></a><br />
-      <strong><a href="docs/audio-quality.md">Voice cloning</a></strong><br />
-      Turn a clean reference recording into speech in a familiar voice.
-    </td>
-    <td width="50%" valign="top">
-      <a href="docs/media/electron/dubbing.png"><img src="docs/media/electron/dubbing.webp" alt="Video dubbing workspace" width="100%" /></a><br />
-      <strong><a href="docs/electron-dubbing.md">Video dubbing</a></strong><br />
-      Translate and dub videos with speech timed to the original.
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <a href="docs/media/electron/voice-design.png"><img src="docs/media/electron/voice-design.webp" alt="Describe a voice in the voice design workspace" width="100%" /></a><br />
-      <strong><a href="docs/electron-voice-design.md">Voice design</a></strong><br />
-      Describe a voice in words and generate it.
-    </td>
-    <td width="50%" valign="top">
-      <a href="docs/media/electron/models.png"><img src="docs/media/electron/models.webp" alt="Install and manage local speech models" width="100%" /></a><br />
-      <strong><a href="docs/downloading-models.md">Local models</a></strong><br />
-      Choose your engines and download only the models you need.
-    </td>
-  </tr>
-</table>
+- Teks Indonesia, tujuh preset suara, kecepatan 0,7–2×, player/preview, unduhan WAV 44,1 kHz, history.
+- Maksimum 6.000 karakter/request; lazy loading, satu inferensi aktif, HTTP 429 saat sibuk, engine dilepas setelah idle sekitar lima menit.
+- API dan MCP Streamable HTTP `/mcp`; model, settings/SQLite dan audio dalam volume persisten.
+- Key wajib termasuk loopback/proxy, audio dan MCP; browser memakai sesi HttpOnly + CSRF, key tidak disimpan di localStorage.
 
-<details>
-<summary><strong>More screenshots</strong></summary>
+Voice cloning/design, dubbing/video, STT/transkripsi, pemisahan audio, gallery, cloud/account, dictation, installer dan updater desktop dinonaktifkan di jalur Online. UI tidak menampilkan kontrolnya. Sumber desktop/mobile/engine opsional dipertahankan sebagai referensi, bukan toolchain/runtime deployment. Workflow lama di `.github/workflows/upstream/` tidak dijalankan GitHub Actions. Lisensi, copyright dan atribusi tetap ada.
 
-<table>
-  <tr>
-    <td width="50%"><a href="docs/media/electron/overview.png"><img src="docs/media/electron/overview.webp" alt="Workspace overview" width="100%" /></a><br /><strong>Workspace overview</strong></td>
-    <td width="50%"><a href="docs/media/electron/model-packs.png"><img src="docs/media/electron/model-packs.webp" alt="Model packs" width="100%" /></a><br /><strong>Model packs</strong></td>
-  </tr>
-</table>
+## Model dan lisensi
 
-</details>
+**Supertonic-3**, SDK 1.3.1; revision `724fb5abbf5502583fb520898d45929e62f02c0b`, CPU ONNX, sekitar 99M parameter. [Model card](https://huggingface.co/Supertone/supertonic-3) secara eksplisit mencantumkan bahasa Indonesia (`id`). Cache unduhan terukur sekitar **383 MiB**. Preset adapter: M1, M3, M4, M5, F3, F4, F5.
 
-- **Dictate & transcribe** — A floating dictation widget and local transcription
-- **Narrate & batch** — Stories, audiobooks and queued jobs
-- **Connect & automate** — Local API, MCP, reusable recipes and watch folders
+SDK MIT; bobot/aset model **OpenRAIL-M dengan pembatasan penggunaan**, termasuk pengungkapan konten yang dihasilkan mesin. Tidak ada larangan umum narasi komersial dalam teks yang diperiksa, tetapi bukan izin tanpa syarat untuk setiap konten/penggunaan. Baca [audit lisensi](docs/online/licensing.md) dan terima ketentuan di UI. Pengunduhan tidak otomatis menerima lisensi. Aplikasi tetap AGPL-3.0-only: bila dipakai pihak lain melalui jaringan, sediakan corresponding source fork yang sebenarnya, bukan hanya link upstream.
 
-Start with **VoiceStudio** (default, powered by k2-fsa/OmniVoice), or pick from dozens of other engines in the Model Manager. See the [features & engine catalog](docs/feature-catalog.md).
+Teks tidak diterjemahkan otomatis. Angka dan istilah dipertahankan; normalisasi agresif dimatikan. Kualitas pelafalan/intonasi/angka/istilah campuran harus dinilai dengan mendengarkan sendiri; WAV valid bukan bukti kualitas narasi. Lihat [audit](docs/online/audit.md), [inventaris model](docs/online/models.md), dan [hasil validasi](docs/online/validation.md).
 
-## Platforms
+## Persyaratan VPS
 
-| Platform & status | Downloads & acceleration |
-| :--- | :--- |
-| <img src="docs/assets/platforms/apple.svg" alt="" width="20" height="20" />&nbsp;**macOS** (Apple Silicon)<br /><sub>Stable</sub> | `.dmg` · [guide](docs/install/macos.md)<br /><sub>Metal (MPS)</sub> |
-| <img src="docs/assets/platforms/windows.svg" alt="" width="20" height="20" />&nbsp;**Windows 10/11** (x64)<br /><sub>Stable</sub> | `.exe` · [guide](docs/install/windows.md)<br /><sub>NVIDIA CUDA · [AMD ROCm (opt-in)](docs/install/windows-rocm.md) · CPU</sub> |
-| <img src="docs/assets/platforms/linux.svg" alt="" width="20" height="20" />&nbsp;**Linux** (x64)<br /><sub>Stable</sub> | `.AppImage` · `.deb` · <a href="https://snapcraft.io/voicestudio"><img src="https://img.shields.io/badge/Snap%20Store-27272a?style=flat-square&amp;logo=snapcraft&amp;logoColor=ffffff" alt="Snap Store" height="20" /></a> · [Nix](docs/install/nix.md) · [guide](docs/install/linux.md)<br /><sub>NVIDIA CUDA · CPU</sub> |
-| <img src="docs/assets/platforms/docker.svg" alt="" width="20" height="20" />&nbsp;**Docker**<br /><sub>Stable</sub> | [GHCR](docs/install/docker.md "ghcr.io/debpalash/voicestudio")<br /><sub>NVIDIA CUDA · AMD ROCm</sub> |
-| <img src="docs/assets/platforms/android.svg" alt="" width="20" height="20" />&nbsp;**Android** 10+<br /><sub>Preview</sub> | `.apk` · [guide](docs/mobile.md#install)<br /><sub>On-device, offline</sub> |
-| <img src="docs/assets/platforms/apple.svg" alt="" width="20" height="20" />&nbsp;**iPhone / iPad** (iOS 17+)<br /><sub>Preview</sub> | `.ipa` (sideload) · [guide](docs/mobile.md#install)<br /><sub>On-device, offline</sub> |
-| <img src="docs/assets/platforms/windows.svg" alt="" width="20" height="20" />&nbsp;**Windows on ARM**<br /><sub>Experimental</sub> | `.exe` · [guide](docs/install/windows.md)<br /><sub>CPU (x64 backend under emulation)</sub> |
-| <img src="docs/assets/platforms/apple.svg" alt="" width="20" height="20" />&nbsp;**Intel Mac**<br /><sub>Limited</sub> | `.dmg` · [why](docs/install/macos.md)<br /><sub>App UI only, connects to a remote backend</sub> |
+Docker Engine + Compose v2, CPU Linux x86_64/ARM64, ruang untuk image/model/audio. Compose membatasi 2 CPU dan 4 GiB RAM sebagai konfigurasi awal, **bukan minimum terukur** atau jaminan untuk setiap VPS. Tidak perlu GPU/CUDA. Image ARM64 diuji lokal; workflow CI membangun x86_64, periksa hasil CI sebelum deployment arsitektur yang belum diuji. WAV mono 16-bit 44,1 kHz sekitar 5 MiB/menit; pantau volume/retention. Dua thread adalah awal konservatif, bukan hasil tuning universal.
 
-Desktop and phone installers are on the [latest release](https://github.com/debpalash/VoiceStudio/releases/latest); Docker images come from GHCR. No GPU? The app is fully usable on the CPU, just slower. Native GGUF engines can also use Vulkan on AMD, Intel and NVIDIA GPUs; OmniVoice GGUF picks its GPU and model size automatically on Windows and Linux ([OmniVoice](docs/engines/omnivoice-gguf.md#vulkan-acceleration), [CosyVoice](docs/engines/cosyvoice-gguf.md)). Speed by engine and hardware: [performance](docs/performance.md).
+## Instalasi Docker
 
-## Get started
-
-**macOS / Linux**
-
-```sh
-curl -fsSL https://voicestudio.sh/install | sh
-```
-
-**Windows** (PowerShell)
-
-```powershell
-irm https://voicestudio.sh/install.ps1 | iex
-```
-
-Or download an installer from the table above. Then open **Voice cloning**, pick a voice or add a clean reference recording, type your text and generate. The app asks before it downloads any model.
-
-> [!NOTE]
-> On macOS, "VoiceStudio is damaged and can't be opened" means Gatekeeper blocked the app, not that the download is broken. See the [Gatekeeper fix](docs/install/macos.md#gatekeeper-quarantine).
-
-<details>
-<summary><strong>More install options</strong>: a specific version, current main, uninstall, from source, with a coding agent</summary>
-
-```sh
-curl -fsSL https://voicestudio.sh/install | sh -s -- --version X.Y.Z   # a specific release
-curl -fsSL https://voicestudio.sh/install | sh -s -- --main            # build current main
-curl -fsSL https://voicestudio.sh/install | sh -s -- --uninstall       # remove the app, keep your data
-```
-
-If `voicestudio.sh` is unreachable, run the script straight from the repository:
-`curl -fsSL https://raw.githubusercontent.com/debpalash/VoiceStudio/main/scripts/install.sh | sh`.
-Prerequisites and behavior: [installer guide](docs/install/script.md).
-
-**From source**
+Gunakan checkout ini; tidak perlu clone ulang.
 
 ```bash
-git clone https://github.com/debpalash/VoiceStudio.git
-cd VoiceStudio
-bun run dev
+cp .env.example .env
+chmod 600 .env
+python3 -c "import secrets; print(secrets.token_urlsafe(48))"
+# Masukkan hasil sebagai OMNIVOICE_API_KEY dalam .env. Jangan commit .env.
+docker compose build
+docker compose up -d
+docker compose ps
+docker compose exec studio python scripts/online-model.py
 ```
 
-`bun run dev` installs the JavaScript dependencies and, when using a supported
-local backend, the Python dependencies before launching Electron. Run
-`bun run setup:api` directly when you only need to rebuild the Python environment.
+Buka **http://localhost:3900**, login dengan key, baca/terima lisensi, masukkan teks lalu Generate. Model tidak diunduh saat startup/idle; perintah terakhir adalah aksi unduh eksplisit. Setelah unduhan, inferensi memakai cache lokal tanpa jaringan. Sesi browser kedaluwarsa dan hilang saat server restart; login ulang bila diminta.
 
-See [Electron setup](electron/README.md).
+Untuk akses VPS sebelum domain siap:
 
-**With a coding agent** (Claude Code, Codex, Cursor, …), paste:
-
-```text
-Install the VoiceStudio app on this device and verify it works, following
-https://github.com/debpalash/VoiceStudio/blob/main/docs/install/agent.md
+```bash
+ssh -L 3900:127.0.0.1:3900 user@vps
 ```
 
-Upgrading from 0.5.3 or older (the Tauri app)? [Install the new app separately](docs/electron-migration.md).
+Backend hanya dipublikasikan ke `127.0.0.1:3900`. Image tidak membawa model/secret; proses UID 10001, volume baru disiapkan untuk UID tersebut. Jangan mengganti binding menjadi publik tanpa kontrol akses.
 
-</details>
+## Domain dan HTTPS
 
-## Documentation
+Contoh Caddy pada host yang sama:
 
-| Need | Start here |
+```caddyfile
+voice.example.com {
+    request_body {
+        max_size 64KB
+    }
+    reverse_proxy 127.0.0.1:3900
+}
+```
+
+Ubah `.env` sesuai domain nyata, lalu `docker compose up -d`:
+
+```dotenv
+VOICESTUDIO_PUBLIC_URL=https://voice.example.com
+OMNIVOICE_ALLOWED_HOSTS=voice.example.com
+OMNIVOICE_ALLOWED_ORIGINS=https://voice.example.com
+OMNIVOICE_MCP_ALLOWED_HOSTS=voice.example.com
+```
+
+Proxy harus meneruskan Host dan `X-Forwarded-Proto: https`; jangan mencatat Authorization/Cookie/body. Timeout upstream harus cukup untuk narasi panjang (misalnya 600 detik pada nginx). MCP memakai Streamable HTTP, bukan WebSocket. Hindari wildcard allowlist. Bila proxy dalam container lain, gunakan jaringan Compose yang sama, target `studio:3900`, dan hapus `ports`. Jangan membuka MCP tanpa autentikasi.
+
+## API
+
+`/docs` dan `/openapi.json` tersedia setelah autentikasi. Header: **`Authorization: Bearer <OMNIVOICE_API_KEY>`**.
+
+| Endpoint | Fungsi |
 |---|---|
-| Setup help | [Troubleshooting](docs/install/troubleshooting.md) · [Model downloads](docs/downloading-models.md) |
-| Guides | [Multi-speaker dubbing](docs/dubbing/multi-speaker-guide.md) · [Expressive speech](docs/expressive-speech.md) · [Exporting dubs](docs/dubbing/export.md) |
-| Models & quality | [Engine guides](docs/engines/README.md) · [whisper.cpp ASR](docs/engines/whisper-cpp.md) · [Benchmarks](docs/benchmarks.md) |
-| Integrations | [Local API](docs/speech-platform.md) · [MCP](docs/mcp.md) · [Examples](examples/README.md) |
-| Phone apps | [iOS and Android](docs/mobile.md) |
-| Development | [Contributing](.github/CONTRIBUTING.md) ([sign the CLA](.github/CONTRIBUTING.md#contribution-licensing) before your first PR) · [Changelog](CHANGELOG.md) |
+| GET /health | Liveness publik tanpa memuat model |
+| GET /engines | Engine aktif dan preset |
+| GET /languages | Bahasa default yang diekspos UI |
+| POST /generate | Form/multipart; WAV + history |
+| GET /history | Audio hasil yang masih ada |
+| GET /audio/{id}.wav | WAV autentikasi; id dari X-Audio-Id/history |
+| GET /audio/{id}.ogg atau .opus | Encoding FFmpeg opsional |
+| GET /models/licenses/acceptance/Supertone/supertonic-3 | Fingerprint/status lisensi |
+| POST /models/licenses/accept | Terima fingerprint yang sudah dibaca |
+| POST /api/auth/session | Tukar bearer key menjadi sesi cookie/bearer |
 
-Agent skills: `npx skills add debpalash/VoiceStudio` (**voicestudio** for audio work, **voicestudio-maintainer** for the repo).
+Contoh dengan key dari environment shell Anda:
 
-## Sponsors
+```bash
+curl --fail-with-body http://127.0.0.1:3900/generate \
+  -H "Authorization: Bearer $OMNIVOICE_API_KEY" \
+  --form-string 'text=Halo semuanya! Selamat datang di channel kami.' \
+  -F language=id -F engine=supertonic3 -F preset_voice=M1 \
+  -F speed=1.0 -F num_step=8 -F effect_preset=raw \
+  -F postprocess_output=false -o narasi.wav
+```
 
-VoiceStudio is free and has no paid cloud behind it. Sponsors keep it shipping: they fund maintainer time, test hardware, code-signing and release infrastructure.
+Bahasa default `id`, steps dibatasi adapter ke 5–12. Chunk 100–1.000 karakter, default 800. Total jeda eksplisit maksimal 30 detik; input hanya jeda ditolak. Empty/panjang HTTP 422; body >64 KiB HTTP 413; sibuk HTTP 429; lisensi belum diterima HTTP 403. Referensi audio/profile/instruct cloning ditolak di Online.
 
-<p>
-    <a href="https://github.com/debpalash/OpenGTM?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/opengtm-dark.svg" /><img src="docs/sponsors/opengtm.svg" alt="OpenGTM" height="48" align="middle" /></picture></a>
-    <a href="https://github.com/debpalash/Opal?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/opal-dark.svg" /><img src="docs/sponsors/opal.svg" alt="Opal" height="48" align="middle" /></picture></a>
-    <a href="https://github.com/velixio/supermetry?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/supermetry-dark.svg" /><img src="docs/sponsors/supermetry.svg" alt="Supermetry" height="48" align="middle" /></picture></a>
-</p>
+## MCP
 
-For sponsorship inquiries, contact [sponsor@voicestudio.sh](mailto:sponsor@voicestudio.sh).
+Klien Codex/agent menggunakan **Streamable HTTP** `https://voice.example.com/mcp` dengan header bearer yang sama. Simpan key di environment/config rahasia klien; format konfigurasi klien berbeda-beda, ikuti dokumentasinya.
 
-<a href="https://github.com/sponsors/debpalash"><img src="https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub Sponsors" /></a>
-[Ko-fi](https://ko-fi.com/debpalash) · [PayPal](https://paypal.me/palashCoder) · [Tiers and benefits](SPONSORS.md) · [Get your logo listed](https://github.com/debpalash/VoiceStudio/issues/new?template=sponsor.yml)
+Tool aktif: `generate_speech`, `list_voices`, `list_languages`, `check_health`. Parameter text/language/profile_id/instruct/speed/steps/format asli dipertahankan; profile_id/instruct ditolak pada Online. Parameter **opsional tambahan `preset_voice`** meneruskan preset engine bawaan (misalnya M1), agar agent dapat memilih suara seperti UI. Default bahasa id, suara M1, WAV.
 
-## Other projects
+Compose memakai output `files`: `audio_url`, audio_id, waktu dan durasi. Download URL dengan header bearer yang sama; URL tidak mengandung key dan tidak publik. `VOICESTUDIO_PUBLIC_URL` menentukan URL hasil, pemanggilan tool tetap in-process. Untuk byte langsung, ubah environment service `OMNIVOICE_MCP_OUTPUT_MODE=resources`. Stdio upstream tetap tersedia untuk integrasi lokal terpisah; deployment remote memakai `/mcp`, tanpa Electron.
 
-More open-source tools from the people building VoiceStudio.
+## Update, backup, restore
 
-- **[OpenGTM](https://opengtm.palash.dev/?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=related-projects)** — Find and enrich companies and people in a self-hosted go-to-market workspace. [Source](https://github.com/debpalash/OpenGTM).
-- **[Opal](https://opal.palash.dev/?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=related-projects)** — Watch, stream and browse your media in one native, open-source player. [Source](https://github.com/debpalash/Opal).
-- **[Supermetry](https://supermetry.com/?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=related-projects)** — Understand your websites and products with self-hosted, cookie-free analytics. [Source](https://github.com/velixio/supermetry).
+Backup konsisten: hentikan service sebentar. Perintah ini tidak menghapus volume:
 
-More projects: [debpalash](https://github.com/debpalash?tab=repositories) · [velixio](https://github.com/velixio?tab=repositories)
+```bash
+mkdir -p backups
+docker compose stop studio
+docker compose run --rm --no-deps -T studio \
+  tar -C /data -czf - . > backups/studio-data.tar.gz
+docker compose start studio
+```
 
-## Team
+Backup berisi SQLite/settings, acceptance, model cache dan audio. Simpan `.env` terpisah dan terenkripsi. Uji restore ke volume **kosong** dahulu:
 
-### Core team
+```bash
+docker compose stop studio
+docker compose run --rm --no-deps -T studio \
+  tar -C /data -xzf - < backups/studio-data.tar.gz
+docker compose up -d
+```
 
-<table>
-<tr>
-<td align="center" width="200"><a href="https://github.com/debpalash"><img src="https://github.com/debpalash.png?size=160" width="80" height="80" alt="Palash Debnath"></a><br><b>Palash Debnath</b><br><sub>Creator and Core Team</sub><br><sub><a href="https://palash.dev">palash.dev</a> · <a href="https://github.com/debpalash">GitHub</a> · <a href="https://x.com/idebpalash">X</a></sub></td>
-<td align="center" width="200"><a href="https://github.com/velixio"><img src="https://github.com/velixio.png?size=160" width="80" height="80" alt="Shimul Debnath"></a><br><b>Shimul Debnath</b><br><sub>Core Team</sub><br><sub><a href="https://shimul.me">shimul.me</a> · <a href="https://github.com/velixio">GitHub</a> · <a href="https://x.com/shimuldn">X</a></sub></td>
-</tr>
-</table>
+Jangan mengekstrak di atas data baru yang belum dibackup. Data upstream lama tidak dipindah otomatis: salin backup ke `/data` dengan UID 10001; migrasi SQLite memakai jalur upstream yang sama.
 
-### Contributors
+Update: backup, fetch/review source fork, lalu `docker compose build && docker compose up -d`. Periksa `docker compose logs --tail 100 studio`. **Jangan gunakan `down -v`.** Model tetap ada. Simpan image sebelumnya untuk rollback; bila ada migrasi schema, gunakan backup yang sesuai, jangan menimpa database otomatis.
 
-<a href="https://github.com/kevin9327"><img src="https://github.com/kevin9327.png?size=96" width="44" height="44" alt="@kevin9327" title="@kevin9327"></a> <a href="https://github.com/jaketame"><img src="https://github.com/jaketame.png?size=96" width="44" height="44" alt="@jaketame" title="@jaketame"></a> <a href="https://github.com/psiberfunk"><img src="https://github.com/psiberfunk.png?size=96" width="44" height="44" alt="@psiberfunk" title="@psiberfunk"></a> <a href="https://github.com/rudycelekli"><img src="https://github.com/rudycelekli.png?size=96" width="44" height="44" alt="@rudycelekli" title="@rudycelekli"></a> <a href="https://github.com/paoloantinori"><img src="https://github.com/paoloantinori.png?size=96" width="44" height="44" alt="@paoloantinori" title="@paoloantinori"></a> <a href="https://github.com/Chang-Jin-Lee"><img src="https://github.com/Chang-Jin-Lee.png?size=96" width="44" height="44" alt="@Chang-Jin-Lee" title="@Chang-Jin-Lee"></a> <a href="https://github.com/swadhinbiswas"><img src="https://github.com/swadhinbiswas.png?size=96" width="44" height="44" alt="@swadhinbiswas" title="@swadhinbiswas"></a> <a href="https://github.com/BichengWang"><img src="https://github.com/BichengWang.png?size=96" width="44" height="44" alt="@BichengWang" title="@BichengWang"></a> <a href="https://github.com/nirmalchatur"><img src="https://github.com/nirmalchatur.png?size=96" width="44" height="44" alt="@nirmalchatur" title="@nirmalchatur"></a> <a href="https://github.com/Shivendra-Coherent"><img src="https://github.com/Shivendra-Coherent.png?size=96" width="44" height="44" alt="@Shivendra-Coherent" title="@Shivendra-Coherent"></a> <a href="https://github.com/marreiradigital"><img src="https://github.com/marreiradigital.png?size=96" width="44" height="44" alt="@marreiradigital" title="@marreiradigital"></a> <a href="https://github.com/nvtoan0201-swe"><img src="https://github.com/nvtoan0201-swe.png?size=96" width="44" height="44" alt="@nvtoan0201-swe" title="@nvtoan0201-swe"></a>
+## Pengembangan lokal
 
-Thank you to everyone who sends code, reports, translations and ideas. [All contributors](https://github.com/debpalash/VoiceStudio/graphs/contributors) · [Contribute](.github/CONTRIBUTING.md)
+```bash
+uv sync --project deploy/online --frozen
+bun install --frozen-lockfile --ignore-scripts
+bun run build:web
+export OMNIVOICE_API_KEY='<key-acak-Anda>'
+export OMNIVOICE_DATA_DIR="$PWD/omnivoice_data"
+export HF_HOME="$OMNIVOICE_DATA_DIR/huggingface"
+deploy/online/.venv/bin/python scripts/online-model.py
+PYTHONPATH=backend deploy/online/.venv/bin/python -m uvicorn online:app \
+  --host 127.0.0.1 --port 3900 --workers 1 --no-access-log
+```
 
-## License & responsible use
+HMR: backend di atas dan `VOICESTUDIO_ONLINE_BUILD=1 bun run --cwd electron dev:web` (port 3901). Aktifkan environment Online dahulu jika memakai `bun run dev:api`, yang memakai interpreter Python aktif. Lock mendukung Linux dan macOS ARM64 untuk pengembangan; deployment produk tetap Linux.
 
-[AGPL-3.0](LICENSE) covers the app, including commercial use under its terms. Model weights, voices and generated output have their own licences, which the Model Manager shows for each model ([inventory](docs/licensing/model-inventory.md)). Clone a voice only with its owner's permission. Details: [LICENSE-NOTICE.md](LICENSE-NOTICE.md).
+```bash
+HF_HUB_OFFLINE=1 HF_HUB_CACHE=/tmp/online-empty-hf-cache \
+  deploy/online/.venv/bin/python -m pytest tests/test_online.py -q
+bun run typecheck
+bun run test
+```
 
-## Community tutorials
+Smoke model nyata: set OMNIVOICE_API_KEY dan VOICESTUDIO_TEST_URL, jalankan `scripts/online-smoke.py` dengan Python Online. Lisensi harus diterima di UI; hanya QA disposable boleh memakai `ONLINE_QA_ACCEPT_LICENSE=1` sesudah review ketentuan. Browser smoke: `node scripts/online-browser-smoke.mjs` dengan Playwright Chromium terpasang.
 
-- [VoiceStudio walkthrough by Nafay 3D (YouTube)](https://www.youtube.com/watch?v=I-u-A-oisIU)
+## Troubleshooting
+
+- 401 setelah restart: login ulang; key tetap di .env, sesi di memori.
+- 403 lisensi: baca lalu terima fingerprint saat ini di UI.
+- Model belum ada: jalankan perintah `scripts/online-model.py` di container.
+- Host/origin ditolak: cocokkan domain HTTPS dalam allowlist .env.
+- 429: tunggu; jangan tambah worker karena menggandakan model di RAM.
+- OOM/CPU tinggi: kurangi teks/thread dan ukur pada VPS Anda; 4 GiB bukan jaminan minimum.
+- AudioSeal tidak terpasang: chokepoint `mark_synthetic` tetap dilalui, tetapi runtime minimal tidak memasang model watermark kedua. Jangan mengklaim watermark neural tersedia; ungkap narasi AI saat publikasi.
+- Kualitas kurang sesuai: coba preset/speed lain, dengarkan angka, jeda dan istilah campuran. Jangan memasang semua engine sekaligus.
+- Disk penuh: periksa volume/history/backup sebelum membersihkan audio, jangan menghapus database/model otomatis.
+
+Tidak ada baseline runtime upstream yang sebanding; jangan mengartikan ukuran source/dependency sebagai penghematan RAM. [Laporan validasi](docs/online/validation.md) mencatat pengukuran dan pengujian yang belum selesai.

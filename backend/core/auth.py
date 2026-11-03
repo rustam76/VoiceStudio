@@ -474,7 +474,7 @@ def resolve_principal(
         store = _active_admin_session_store()
 
     host = _client_host(connection)
-    if is_loopback(host):
+    if is_loopback(host) and os.environ.get("OMNIVOICE_ONLINE") != "1":
         return _attach_principal(
             connection,
             AuthPrincipal(PrincipalKind.LOOPBACK, LOOPBACK_CAPABILITIES),

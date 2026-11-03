@@ -1888,6 +1888,17 @@ async def generate_speech(
     import unicodedata
     text = unicodedata.normalize("NFC", text)
 
+    if os.environ.get("OMNIVOICE_ONLINE") == "1":
+        from core.online_policy import generation_policy
+        language = generation_policy(
+            text=text, language=language, engine=engine, speed=speed,
+            profile_id=profile_id, ref_audio=ref_audio, instruct=instruct,
+            design_recipe=design_recipe, max_chunk_chars=max_chunk_chars,
+        )
+        engine = "supertonic3"
+        if postprocess_output is None:
+            postprocess_output = False
+
     # ── Engine resolution (issue #312) ──────────────────────────────────────
     # The request runs on the engine selected in Settings (POST /engines/select,
     # env var OMNIVOICE_TTS_BACKEND wins), or an explicit per-request `engine`

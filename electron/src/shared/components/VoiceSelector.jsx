@@ -37,7 +37,7 @@ import { useAppStore } from '../store';
  * @param {string}   value            controlled value (see contract above)
  * @param {(v:string)=>void} onChange commits a new value
  * @param {Array}    [profiles=[]]    voice profiles ({id,name,instruct?})
- * @param {boolean}  [presets=false]  include the PRESETS character group
+ * @param {boolean|Array<{id:string,name:string}>} [presets=false] built-in characters or engine presets
  * @param {boolean}  [gallery=true]   offer the Voice Gallery (archetype) group
  * @param {Object}   [speakerClones=null] dub from-video speakers ({name: ...})
  * @param {boolean}  [engineDefault=true] include the '' engine-default row
@@ -196,7 +196,7 @@ export default function VoiceSelector({
 
     // 6. presets.
     if (presets) {
-      for (const p of PRESETS) {
+      for (const p of (Array.isArray(presets) ? presets : PRESETS)) {
         list.push({
           value: `preset:${p.id}`,
           label: p.name,

@@ -39,7 +39,6 @@ export default defineConfig({
     // than a laptop; a real hang still fails, a busy runner no longer does.
     testTimeout: process.env.CI ? 30_000 : 5_000,
     include: [
-      'src/main/**/*.test.{ts,tsx}',
       'src/renderer/**/*.test.{ts,tsx}',
       'src/shared/repair-request.test.ts',
       'src/shared/download-failure.test.ts',

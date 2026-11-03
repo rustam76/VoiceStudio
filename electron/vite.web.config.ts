@@ -13,6 +13,7 @@ const version = JSON.parse(
   readFileSync(resolve(import.meta.dirname, '../package.json'), 'utf8'),
 ).version;
 const backendPort = process.env.OMNIVOICE_PORT || String(DEFAULT_BACKEND_PORT);
+const online = process.env.VOICESTUDIO_ONLINE_BUILD === '1';
 
 export default defineConfig({
   root,
@@ -22,8 +23,12 @@ export default defineConfig({
     tailwindcss(),
     {
       name: 'app-identity',
-      transformIndexHtml(html) {
-        return html.replaceAll('__APP_PRODUCT_NAME__', PRODUCT_NAME);
+      transformIndexHtml: {
+        order: 'pre',
+        handler(html) {
+          return html.replaceAll('__APP_PRODUCT_NAME__', online ? 'VoiceStudio Online' : PRODUCT_NAME)
+            .replace('/src/main.tsx', online ? '/src/online/main.tsx' : '/src/main.tsx');
+        },
       },
     },
     {

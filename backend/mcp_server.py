@@ -448,6 +448,12 @@ def create_mcp_server(app=None):
             "voice design, and video dubbing in 646 languages."
         ),
     )
+    if app is not None and getattr(app.state, "online", False):
+        # Streamable HTTP permits JSON responses without server-held sessions.
+        # One personal server does not need an unbounded registry of idle SSE
+        # readers; requests still use the same /mcp tools and transport.
+        mcp.settings.stateless_http = True
+        mcp.settings.json_response = True
     # Serve the Streamable-HTTP transport at the app root so mounting the whole
     # app at "/mcp" on the main FastAPI yields the endpoint at "/mcp". FastMCP's
     # default path is "/mcp", which would double-prefix to "/mcp/mcp" when
@@ -482,16 +488,22 @@ def create_mcp_server(app=None):
         # Follows the backend's real bind host/port (OMNIVOICE_PORT), not a
         # hard-coded 3900 — Electron moves the port via OMNIVOICE_PORT only.
         # Also the public base of the `audio_url` returned in files mode.
+        if app is not None and getattr(app.state, "online", False):
+            public_url = os.environ.get("VOICESTUDIO_PUBLIC_URL", "").strip().rstrip("/")
+            if public_url:
+                return public_url
         from services.network_share import backend_self_url
         return backend_self_url()
 
     def _client(timeout: float):
         import httpx
         # OMNIVOICE_API_URL is an explicit "send tool calls there" override.
-        if app is not None and not os.environ.get("OMNIVOICE_API_URL", "").strip():
+        if app is not None and (getattr(app.state, "online", False) or not os.environ.get("OMNIVOICE_API_URL", "").strip()):
             return httpx.AsyncClient(
                 transport=httpx.ASGITransport(app=app, client=("127.0.0.1", 0)),
                 base_url="http://127.0.0.1",
+                headers=({"Authorization": "Bearer " + os.environ["OMNIVOICE_API_KEY"]}
+                         if getattr(app.state, "online", False) else {}),
                 timeout=timeout,
             )
         from services.network_share import backend_auth_headers
@@ -543,7 +555,14 @@ def create_mcp_server(app=None):
             pass
         return None
 
-    @mcp.tool()
+    @mcp.tool(description=(
+        "Generate local Supertonic-3 narration. Default language is Indonesian (id). "
+        "Text: 1–6000 characters; speed: 0.7–2.0; steps are clamped to 5–12. "
+        "Use preset_voice from list_voices; omitted voice uses M1. "
+        "Cloning, profile_id and instruct are disabled. Returns audio_id, timings "
+        "and authenticated audio URL and/or base64 according to output mode."
+        if app is not None and getattr(app.state, "online", False) else None
+    ))
     async def generate_speech(
         text: str,
         language: str | None = None,
@@ -552,6 +571,7 @@ def create_mcp_server(app=None):
         speed: float = 1.0,
         steps: int = 16,
         format: str = "wav",
+        preset_voice: str | None = None,
     ) -> str:
         """Generate speech audio from text.
 
@@ -567,6 +587,7 @@ def create_mcp_server(app=None):
             steps: Diffusion steps (8=fast/draft, 16=balanced, 32=quality).
             format: File and URL format: wav (default), ogg or opus. Both
                 ogg and opus carry Opus in Ogg; requires files/both mode and ffmpeg.
+              preset_voice: Built-in engine voice ID, e.g. M1 for Supertonic-3.
 
         Returns:
             JSON with audio_id, generation_time_s, audio_duration_s and the
@@ -605,6 +626,8 @@ def create_mcp_server(app=None):
             form["profile_id"] = profile_id
         if instruct:
             form["instruct"] = instruct
+        if preset_voice:
+            form["preset_voice"] = preset_voice
 
         r = await _api_post_form(
             "/generate", data=form, timeout=_post_timeout_s("generate", text)
@@ -634,6 +657,10 @@ def create_mcp_server(app=None):
         Returns a JSON array of voice profiles with id, name, type (clone/design),
         and personality.
         """
+        if app is not None and getattr(app.state, "online", False):
+            inventory = await _api_get("/engines")
+            return json.dumps([{"id": voice, "name": voice, "kind": "preset"}
+                               for voice in inventory["tts"]["backends"][0]["preset_voices"]])
         profiles = await _api_get("/profiles")
         return json.dumps(profiles)
 
@@ -654,6 +681,9 @@ def create_mcp_server(app=None):
         VoiceStudio supports 646 languages. This returns the most popular ones
         plus a note about the full count.
         """
+        if app is not None and getattr(app.state, "online", False):
+            languages = await _api_get("/languages")
+            return json.dumps({"total": len(languages), "languages": languages, "default": "id"})
         return (
             '{"total":646,"popular":['
             '"en","es","fr","de","it","pt","ru","ja","ko","zh",'
@@ -885,6 +915,9 @@ def create_mcp_server(app=None):
             "unmatched": ignored_words,
         })
 
+    if app is not None and getattr(app.state, "online", False):
+        for name in ("transcribe", "clone_voice", "describe_voice", "design_voice", "list_personalities"):
+            mcp.remove_tool(name)
     return mcp
 
 

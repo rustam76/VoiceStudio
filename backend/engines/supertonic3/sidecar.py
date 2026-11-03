@@ -191,6 +191,7 @@ def _load_tts(stdout) -> object:
     model_path = snapshot_download(
         repo_id="Supertone/supertonic-3",
         revision=revision,
+        **({"local_files_only": True} if os.environ.get("OMNIVOICE_ONLINE") == "1" else {}),
     )
 
     _send(stdout, {"op": "progress", "stage": "loading_model", "percent": 50})
