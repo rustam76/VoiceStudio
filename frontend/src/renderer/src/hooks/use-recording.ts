@@ -177,6 +177,10 @@ export function useRecording(
 
   const start = useCallback(async () => {
     if (startingRef.current || recorderRef.current) return;
+    if (typeof navigator.mediaDevices?.getUserMedia !== 'function') {
+      toast.error(tr('recording.mic_unavailable'));
+      return;
+    }
     const generation = lifecycle.current;
     startingRef.current = true;
     setIsStarting(true);

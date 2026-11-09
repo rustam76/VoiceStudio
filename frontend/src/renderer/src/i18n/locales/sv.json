@@ -3236,6 +3236,7 @@
     "autoHint": "Väljer den bästa nivån för den här datorn."
   },
   "recording": {
+    "mic_unavailable": "Mikrofoninspelning kräver HTTPS (eller localhost) och en kompatibel webbläsare. Öppna webbplatsen via HTTPS eller ladda upp en ljudfil.",
     "input_device": "Inmatningsenhet",
     "default_input": "Systemstandard",
     "microphone_number": "Mikrofon {{number}}",

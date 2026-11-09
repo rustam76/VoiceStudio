@@ -3238,6 +3238,7 @@
     "autoHint": "Elige el mejor nivel para este equipo."
   },
   "recording": {
+    "mic_unavailable": "La grabación con micrófono requiere HTTPS (o localhost) y un navegador compatible. Abre este sitio mediante HTTPS o sube un archivo de audio.",
     "input_device": "Dispositivo de entrada",
     "default_input": "Predeterminado del sistema",
     "microphone_number": "Micrófono {{number}}",

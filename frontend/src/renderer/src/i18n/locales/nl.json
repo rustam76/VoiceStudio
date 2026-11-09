@@ -3236,6 +3236,7 @@
     "autoHint": "Kiest het beste niveau voor deze computer."
   },
   "recording": {
+    "mic_unavailable": "Microfoonopnamen vereisen HTTPS (of localhost) en een geschikte browser. Open deze website via HTTPS of upload een audiobestand.",
     "input_device": "Invoerapparaat",
     "default_input": "Systeemstandaard",
     "microphone_number": "Microfoon {{number}}",

@@ -3236,6 +3236,7 @@
     "autoHint": "為這台電腦選擇最佳等級。"
   },
   "recording": {
+    "mic_unavailable": "麥克風錄音需要 HTTPS（或 localhost）及相容的瀏覽器。請透過 HTTPS 開啟此網站，或上傳音訊檔案。",
     "input_device": "輸入裝置",
     "default_input": "系統預設",
     "microphone_number": "麥克風 {{number}}",

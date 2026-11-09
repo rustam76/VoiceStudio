@@ -3236,6 +3236,7 @@
     "autoHint": "このコンピューターに最適なレベルを選びます。"
   },
   "recording": {
+    "mic_unavailable": "マイク録音にはHTTPS（またはlocalhost）と対応ブラウザーが必要です。HTTPSでこのサイトを開くか、音声ファイルをアップロードしてください。",
     "input_device": "入力デバイス",
     "default_input": "システム既定",
     "microphone_number": "マイク {{number}}",

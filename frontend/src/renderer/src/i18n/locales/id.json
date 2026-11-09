@@ -3236,6 +3236,7 @@
     "autoHint": "Memilih level terbaik untuk komputer ini."
   },
   "recording": {
+    "mic_unavailable": "Rekam mikrofon memerlukan HTTPS (atau localhost) dan browser yang mendukung. Buka situs ini lewat HTTPS, atau unggah file audio.",
     "input_device": "Perangkat masukan",
     "default_input": "Bawaan sistem",
     "microphone_number": "Mikrofon {{number}}",

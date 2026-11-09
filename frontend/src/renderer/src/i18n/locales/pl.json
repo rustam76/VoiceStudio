@@ -3262,6 +3262,7 @@
     "autoHint": "Wybiera najlepszy poziom dla tego komputera."
   },
   "recording": {
+    "mic_unavailable": "Nagrywanie mikrofonem wymaga HTTPS (lub localhost) i zgodnej przeglądarki. Otwórz tę stronę przez HTTPS lub prześlij plik audio.",
     "input_device": "Urządzenie wejściowe",
     "default_input": "Domyślne systemowe",
     "microphone_number": "Mikrofon {{number}}",

@@ -1,8 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
+import { toast } from 'sonner';
 import { useRecording } from './use-recording';
 import { cleanAudio } from '@/lib/api/audio';
 import { startSupportedMediaRecorder } from '@/lib/audio/recorder';
+vi.mock('@/lib/i18n-text', () => ({ tr: (key: string) => key }));
 vi.mock('@/lib/api/audio', () => ({ cleanAudio: vi.fn() }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 vi.mock('@/lib/audio/recorder', () => ({
@@ -74,3 +76,20 @@ it('does not deliver cleaned audio after its recording view unmounts', async () 
   });
   expect(onRecorded).not.toHaveBeenCalled();
 });
+
+it.each([undefined, {}])(
+  'explains HTTPS or browser support when the microphone API is absent (%s)',
+  async (mediaDevices) => {
+    Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: mediaDevices });
+    const onRecorded = vi.fn();
+    const { result } = renderHook(() => useRecording(onRecorded));
+    await act(async () => {
+      await result.current.start();
+    });
+    expect(toast.error).toHaveBeenCalledWith('recording.mic_unavailable');
+    expect(result.current.isStarting).toBe(false);
+    expect(result.current.isRecording).toBe(false);
+    expect(startSupportedMediaRecorder).not.toHaveBeenCalled();
+    expect(onRecorded).not.toHaveBeenCalled();
+  },
+);

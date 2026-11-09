@@ -651,6 +651,7 @@
     "recentsTab": "Recents"
   },
   "recording": {
+    "mic_unavailable": "Microphone recording requires HTTPS (or localhost) and a compatible browser. Open this site using HTTPS, or upload an audio file.",
     "cleaned_loaded": "Recording cleaned and loaded.",
     "loaded_raw": "Recording loaded (raw — denoising unavailable).",
     "too_short": "Recording too short.",

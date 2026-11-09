@@ -3232,6 +3232,7 @@
     "autoHint": "为这台电脑选择最佳级别。"
   },
   "recording": {
+    "mic_unavailable": "麦克风录音需要 HTTPS（或 localhost）和兼容的浏览器。请通过 HTTPS 打开此网站，或上传音频文件。",
     "input_device": "输入设备",
     "default_input": "系统默认",
     "microphone_number": "麦克风 {{number}}",

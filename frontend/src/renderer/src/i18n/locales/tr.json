@@ -3236,6 +3236,7 @@
     "autoHint": "Bu bilgisayar için en iyi seviyeyi seçer."
   },
   "recording": {
+    "mic_unavailable": "Mikrofon kaydı için HTTPS (veya localhost) ve uyumlu bir tarayıcı gerekir. Bu siteyi HTTPS ile açın veya bir ses dosyası yükleyin.",
     "input_device": "Giriş aygıtı",
     "default_input": "Sistem varsayılanı",
     "microphone_number": "Mikrofon {{number}}",

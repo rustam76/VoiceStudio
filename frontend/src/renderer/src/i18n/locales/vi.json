@@ -3236,6 +3236,7 @@
     "autoHint": "Chọn mức tốt nhất cho máy tính này."
   },
   "recording": {
+    "mic_unavailable": "Ghi âm bằng micrô cần HTTPS (hoặc localhost) và trình duyệt tương thích. Mở trang này bằng HTTPS hoặc tải tệp âm thanh lên.",
     "input_device": "Thiết bị đầu vào",
     "default_input": "Mặc định hệ thống",
     "microphone_number": "Micrô {{number}}",

@@ -3238,6 +3238,7 @@
     "autoHint": "Choisit le meilleur niveau pour cet ordinateur."
   },
   "recording": {
+    "mic_unavailable": "L’enregistrement au microphone nécessite HTTPS (ou localhost) et un navigateur compatible. Ouvrez ce site en HTTPS ou importez un fichier audio.",
     "input_device": "Périphérique d’entrée",
     "default_input": "Entrée système par défaut",
     "channels": "Canaux",

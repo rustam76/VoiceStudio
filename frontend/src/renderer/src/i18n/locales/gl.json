@@ -651,6 +651,7 @@
     "recentsTab": "Recentes"
   },
   "recording": {
+    "mic_unavailable": "A gravación co micrófono require HTTPS (ou localhost) e un navegador compatible. Abre este sitio mediante HTTPS ou carga un ficheiro de audio.",
     "cleaned_loaded": "Gravación limpa e cargada.",
     "loaded_raw": "Gravación cargada (en bruto: a eliminación de ruído non está dispoñible).",
     "too_short": "A gravación é moi curta.",

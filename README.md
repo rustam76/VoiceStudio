@@ -34,6 +34,10 @@ OMNIVOICE_ALLOWED_HOSTS=voice.example.com
 OMNIVOICE_ALLOWED_ORIGINS=https://voice.example.com
 ```
 
+Rekam mikrofon browser memerlukan HTTPS (atau localhost). Alamat HTTP/IP biasa
+tidak menyediakan API mikrofon; gunakan domain HTTPS dengan sertifikat valid.
+Unggah file audio tetap dapat digunakan tanpa merekam dari browser.
+
 Buka web dan login dengan kunci yang sama. Backend dijalankan dalam server mode,
 sehingga admin API tetap membutuhkan autentikasi. Cookie memakai CSRF bawaan.
 API: `/docs`, `/openapi.json`, `/generate`, `/history`, dan `/v1/audio/speech`.

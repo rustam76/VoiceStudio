@@ -3288,6 +3288,7 @@
     "autoHint": "يختار أفضل مستوى لهذا الكمبيوتر."
   },
   "recording": {
+    "mic_unavailable": "يتطلب تسجيل الميكروفون HTTPS (أو localhost) ومتصفحًا متوافقًا. افتح هذا الموقع عبر HTTPS أو ارفع ملفًا صوتيًا.",
     "input_device": "جهاز الإدخال",
     "default_input": "إعداد النظام الافتراضي",
     "microphone_number": "الميكروفون {{number}}",

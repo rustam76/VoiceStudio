@@ -3236,6 +3236,7 @@
     "autoHint": "이 컴퓨터에 가장 알맞은 수준을 고릅니다."
   },
   "recording": {
+    "mic_unavailable": "마이크 녹음에는 HTTPS(또는 localhost)와 호환 브라우저가 필요합니다. HTTPS로 이 사이트를 열거나 오디오 파일을 업로드하세요.",
     "input_device": "입력 장치",
     "default_input": "시스템 기본값",
     "microphone_number": "마이크 {{number}}",
