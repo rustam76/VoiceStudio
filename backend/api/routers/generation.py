@@ -1912,6 +1912,7 @@ async def generate_speech(
     # classic flow, so streaming is purely a delivery channel — engine-agnostic
     # (text-level chunking, no per-engine token streaming).
     stream: bool = Form(False),
+    preview_audio: bool = Form(True),
 ):
     """Generate a voice take through the selected TTS engine.
 
@@ -2367,6 +2368,10 @@ async def generate_speech(
     # seed / normalization) already ran, so per-chunk jobs spend the generate
     # budget on generation only — and each chunk gets its own budget, so a
     # long script can't time out merely for being long.
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite():
+        from services.hosted_narration import MAX_TEXT_CHARS
+        max_chunk_chars = min(max_chunk_chars or MAX_TEXT_CHARS, MAX_TEXT_CHARS)
     if stream:
         from omnivoice.utils.text import parse_pause_markers
         from services.chunked_tts import split_text_into_chunks
@@ -2434,7 +2439,8 @@ async def generate_speech(
                     )[0]
                     sr = _model.sampling_rate if hasattr(_model, "sampling_rate") else 24000
                     skip = False
-                preview = _apply_effect_chain(raw, sr, effect_preset, skip_mastering=skip)
+                preview = (_apply_effect_chain(raw, sr, effect_preset, skip_mastering=skip)
+                           if preview_audio else None)
                 # The STREAMED copy is provenance-marked by the caller (#1169
                 # mark, moved off this GPU job in #1190): the preview PCM
                 # leaves the app the moment it's yielded, before
@@ -2550,12 +2556,15 @@ async def generate_speech(
                     # (#1190): AudioSeal embedding is CPU work that owns no
                     # VRAM, and on a 1-worker host it used to serialize
                     # directly ahead of the next generate.
-                    from services.watermark import mark_synthetic_async
-                    _preview = await mark_synthetic_async(
-                        audio_tensor, sample_rate,
-                        context="generate.stream_preview",
-                    )
-                    yield _line({"type": "chunk", "seq": 0, "pcm": _pcm16_b64(_preview)})
+                    if preview_audio:
+                        from services.watermark import mark_synthetic_async
+                        _preview = await mark_synthetic_async(
+                            audio_tensor, sample_rate,
+                            context="generate.stream_preview",
+                        )
+                        yield _line({"type": "chunk", "seq": 0, "pcm": _pcm16_b64(_preview)})
+                    else:
+                        yield _line({"type": "progress", "percent": 100})
                 else:
                     parts = []
                     sample_rate = None
@@ -2586,11 +2595,12 @@ async def generate_speech(
                         # Provenance-mark the streamed copy off the GPU pool
                         # (#1169 mark, #1190 placement): CPU-only AudioSeal
                         # work must not occupy a GPU worker between chunks.
-                        from services.watermark import mark_synthetic_async
-                        preview = await mark_synthetic_async(
-                            preview, sample_rate,
-                            context="generate.stream_preview",
-                        )
+                        if preview_audio:
+                            from services.watermark import mark_synthetic_async
+                            preview = await mark_synthetic_async(
+                                preview, sample_rate,
+                                context="generate.stream_preview",
+                            )
                         if i == 0:
                             # After the first render so lazy-loading engines
                             # report their REAL sample rate (see /ws/tts).
@@ -2600,7 +2610,10 @@ async def generate_speech(
                                 "total_chunks": len(_text_chunks),
                                 "crossfade_ms": crossfade_ms, "seed": used_seed,
                             })
-                        yield _line({"type": "chunk", "seq": i, "pcm": _pcm16_b64(preview)})
+                        if preview_audio:
+                            yield _line({"type": "chunk", "seq": i, "pcm": _pcm16_b64(preview)})
+                        else:
+                            yield _line({"type": "progress", "percent": round((i + 1) * 100 / len(_text_chunks))})
                     audio_tensor = await run_on_gpu_pool_guarded(
                         functools.partial(_assemble_stream_chunks, parts, sample_rate),
                         what="TTS assemble",

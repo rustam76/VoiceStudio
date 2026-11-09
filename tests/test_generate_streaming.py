@@ -498,8 +498,9 @@ def test_classic_generate_unaffected_by_stream_default(client, monkeypatch,
     assert res.headers.get("x-audio-id")
 
 
+@pytest.mark.parametrize("preview_audio", [True, False])
 def test_stream_sends_blank_keepalives_during_slow_render(
-    client, monkeypatch, no_omnivoice_model,
+    client, monkeypatch, no_omnivoice_model, preview_audio,
 ):
     from core import stream_keepalive
 
@@ -510,7 +511,8 @@ def test_stream_sends_blank_keepalives_during_slow_render(
     with client.stream(
         "POST",
         "/generate",
-        data={"text": "A short sentence.", "engine": "stream-fake", "stream": "true"},
+        data={"text": "A short sentence.", "engine": "stream-fake", "stream": "true",
+              "preview_audio": str(preview_audio).lower()},
     ) as response:
         assert response.status_code == 200, response.read()
         body = response.read()
@@ -520,4 +522,20 @@ def test_stream_sends_blank_keepalives_during_slow_render(
     lines = body.split(b"\n")
     assert b"" in lines[:-1]
     events = [json.loads(line) for line in lines if line.strip()]
-    assert [event["type"] for event in events] == ["start", "chunk", "done"]
+    assert [event["type"] for event in events] == ["start", "chunk" if preview_audio else "progress", "done"]
+
+@pytest.mark.parametrize('text', ['Hello there.', 'A sentence for narration. ' * 30])
+def test_progress_only_stream_saves_audio_without_preview(client, monkeypatch, no_omnivoice_model, text):
+    fake = _make_deterministic_engine()
+    monkeypatch.setitem(_tts_mod()._REGISTRY, 'stream-fake', fake)
+    events = _stream_events(client, {'text': text, 'engine': 'stream-fake',
+                                     'preview_audio': 'false', 'max_chunk_chars': '100'})
+    types = [event['type'] for event, _ in events]
+    assert types[0] == 'start'
+    assert types[-1] == 'done'
+    assert 'chunk' not in types
+    assert all('pcm' not in event for event, _ in events)
+    assert [e['percent'] for e, _ in events if e['type'] == 'progress'][-1] == 100
+    done = events[-1][0]
+    assert _saved_wav_bytes(done['audio_path'])
+    assert done['id'] in {h['id'] for h in client.get('/history').json()}

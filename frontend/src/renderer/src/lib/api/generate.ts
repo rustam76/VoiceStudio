@@ -252,7 +252,9 @@ async function readAudioBody(
 
 export interface GenerateOptions {
   signal?: AbortSignal;
-  /** Download progress 0..100 once Content-Length is known; never called otherwise. */
+  stream?: boolean;
+  playPreview?: boolean;
+  /** Synthesis or download progress, 0..100. */
   onProgress?: (pct: number | null) => void;
 }
 
@@ -307,6 +309,8 @@ export async function generateCloneStreaming(
 ): Promise<GenerateResult> {
   const form = toGenerateForm(input);
   form.append('stream', 'true');
+  const preview = opts.playPreview !== false;
+  if (!preview) form.append('preview_audio', 'false');
   const finishActivity = beginAppActivity('synthesis');
   let player: ReturnType<typeof createStreamingPreview> | null = null;
   let meta: StreamEvent | null = null;
@@ -328,10 +332,12 @@ export async function generateCloneStreaming(
       if (event.type === 'start') {
         if (!event.sample_rate) throw new StreamingPreviewError('TTS stream has no sample rate');
         total = event.total_chunks ?? 0;
-        player = createStreamingPreview(event.sample_rate, event.crossfade_ms);
+        if (preview) player = createStreamingPreview(event.sample_rate, event.crossfade_ms);
       } else if (event.type === 'chunk') {
-        if (!event.pcm || !player) throw new StreamingPreviewError('Invalid TTS audio chunk');
-        player.appendPcm16Base64(event.pcm);
+        if (preview) {
+          if (!event.pcm || !player) throw new StreamingPreviewError('Invalid TTS audio chunk');
+          player.appendPcm16Base64(event.pcm);
+        }
         received += 1;
         if (total > 0) opts.onProgress?.(Math.min(100, Math.round((received / total) * 100)));
       } else if (event.type === 'progress' && typeof event.percent === 'number') {
@@ -410,11 +416,12 @@ export async function generateCloneStreaming(
   }
 }
 
-/** Synthesize one take through the classic whole-file path. */
+/** Hosted takes use progress streaming to keep the proxy connection active. */
 export async function generateClone(
   input: CloneGenerateInput,
   opts: GenerateOptions = {},
 ): Promise<GenerateResult> {
+  const stream = opts.stream ?? __WEB_DEPLOYMENT__;
   const form = toGenerateForm(input);
   const controller = new AbortController();
   const forwardAbort = (): void => controller.abort();
@@ -428,8 +435,9 @@ export async function generateClone(
     forwardAbort,
     generateAbortMs(input.text.length, reportedGenerateBudget()),
   );
-  const finishActivity = beginAppActivity('synthesis');
+  const finishActivity = stream ? () => {} : beginAppActivity('synthesis');
   try {
+    if (stream) return await generateCloneStreaming(input, { ...opts, signal: controller.signal, playPreview: false });
     const res = await apiFetch('/generate', {
       method: 'POST',
       body: form,

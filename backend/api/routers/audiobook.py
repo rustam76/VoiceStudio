@@ -795,6 +795,9 @@ def _chapter_cache_inputs(chapter, sr, engine_id, resolve, cache_dir, lexicon=No
     # replaying stale audio (the CRITICAL TRAP). Empty for a default render, so
     # the derivation stays byte-identical to pre-#1208 and released caches hit.
     expr_sig = opts.cache_signature()
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite():
+        expr_sig += "|hosted-bounded-v1"
     if expr_sig:
         sig["\x00expressive"] = expr_sig
     # Fold the #1217 voice map into BOTH cache layers, exactly like the
@@ -1119,6 +1122,10 @@ async def _render_longform_sse(
     from core.failure import build_failure, build_failure_event
     from services.ffmpeg_utils import find_ffmpeg, run_ffmpeg
     opts = opts or ExpressiveOptions()
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite():
+        from services.hosted_narration import bounded_plan
+        plan = bounded_plan(plan, opts)
 
     # Resume reuses the original job_id (continuing the same job row + cached
     # chapters); a fresh render generates a new one. The id may arrive from the

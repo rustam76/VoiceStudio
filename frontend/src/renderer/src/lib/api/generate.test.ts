@@ -573,3 +573,27 @@ it('sends the saved profile and its reference text on the streaming route', asyn
   expect(form.get('profile_id')).toBe('saved-voice');
   expect(form.get('ref_text')).toBe('Reference words');
 });
+it('keeps hosted generation alive with progress events without autoplaying preview audio', async () => {
+  const audio = 'final-wav';
+  const context = vi.fn(() => { throw new Error('Preview must not start'); });
+  vi.stubGlobal('AudioContext', context);
+  const fetcher = vi.fn()
+    .mockResolvedValueOnce(new Response(
+      '\n' + JSON.stringify({ type: 'start', sample_rate: 44100, total_chunks: 2 }) + '\n' +
+      JSON.stringify({ type: 'progress', percent: 50 }) + '\n\n' +
+      JSON.stringify({ type: 'done', id: 'long', audio_path: 'long.wav', duration: 1800 }) + '\n',
+      { headers: { 'content-type': 'application/x-ndjson' } },
+    ))
+    .mockResolvedValueOnce(new Response(audio));
+  vi.stubGlobal('fetch', fetcher);
+  const progress = vi.fn();
+  const result = await generateClone(BASE_INPUT, { stream: true, onProgress: progress });
+  const form = fetcher.mock.calls[0][1].body as FormData;
+  expect(form.get('stream')).toBe('true');
+  expect(form.get('preview_audio')).toBe('false');
+  expect(result.audioPath).toBe('long.wav');
+  expect(result.durationSeconds).toBe(1800);
+  expect(await result.blob.text()).toBe('final-wav');
+  expect(progress).toHaveBeenCalledWith(50);
+  expect(context).not.toHaveBeenCalled();
+});

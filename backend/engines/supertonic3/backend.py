@@ -258,11 +258,25 @@ class Supertonic3Backend(SubprocessBackend):
             "speed": speed,
             "total_steps": total_steps,
         }
-        audio = super().generate(text, **forwarded)
-        if _studio_lite() and kw.get("ref_audio"):
-            from engines.openvoice_v2.converter import convert
-            audio = convert(audio, self.sample_rate, kw["ref_audio"])
-        return audio
+        from services.chunked_tts import concatenate_audio_chunks, split_text_into_chunks
+
+        if _studio_lite():
+            from services.hosted_narration import MAX_TEXT_CHARS
+            texts = split_text_into_chunks(text, MAX_TEXT_CHARS)
+        else:
+            texts = [text]
+        if not texts:
+            raise ValueError("Text must not be empty")
+        parts = []
+        for piece in texts:
+            audio = super().generate(piece, **forwarded)
+            if _studio_lite() and kw.get("ref_audio"):
+                from engines.openvoice_v2.converter import convert
+                audio = convert(audio, self.sample_rate, kw["ref_audio"])
+            parts.append(audio)
+        if len(parts) == 1:
+            return parts[0]
+        return concatenate_audio_chunks(parts, self.sample_rate, crossfade_ms=50)
 
     def unload(self) -> None:
         super().unload()

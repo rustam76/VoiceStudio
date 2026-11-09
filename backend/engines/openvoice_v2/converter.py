@@ -93,18 +93,42 @@ class Converter:
                                                      rate // divisor).copy())
             return wave.unsqueeze(0)
 
-        source_audio = mono_at_rate(source, source_rate)
-        spec = self._spectrogram(source_audio)
-        converted = self.model.voice_conversion(
-            spec, torch.LongTensor([spec.shape[-1]]),
-            sid_src=self._embedding(source_audio), sid_tgt=self._embedding(target_audio), tau=0.3,
-        )[0][0].cpu().float()
-        if self.rate != source_rate:
-            divisor = math.gcd(self.rate, source_rate)
-            converted = torch.from_numpy(resample_poly(converted.numpy(), source_rate // divisor,
-                                                       self.rate // divisor, axis=-1).copy())
-        if not converted.numel() or not torch.isfinite(converted).all():
-            raise RuntimeError("OpenVoice produced invalid audio")
+        source = source.detach().cpu().float()
+        if source.ndim == 1:
+            source = source.unsqueeze(0)
+        if source.ndim != 2 or not source.numel() or not torch.isfinite(source).all():
+            raise ValueError("Source audio is empty or invalid")
+        # Speaker identity is shared by all windows; never encode a whole
+        # narration just to identify the source voice.
+        source_identity = mono_at_rate(source[:, :source_rate * 5], source_rate)
+        source_se = self._embedding(source_identity)
+        target_se = self._embedding(target_audio)
+        samples = source.shape[-1]
+        output = torch.empty((1, samples), dtype=torch.float32)
+        window_size = source_rate * 8
+        context = max(1, source_rate // 5)
+        for start in range(0, samples, window_size):
+            end = min(samples, start + window_size)
+            left, right = max(0, start - context), min(samples, end + context)
+            source_audio = mono_at_rate(source[:, left:right], source_rate)
+            spec = self._spectrogram(source_audio)
+            converted = self.model.voice_conversion(
+                spec, torch.LongTensor([spec.shape[-1]]),
+                sid_src=source_se, sid_tgt=target_se, tau=0.3,
+            )[0][0].cpu().float()
+            if self.rate != source_rate:
+                divisor = math.gcd(self.rate, source_rate)
+                converted = torch.from_numpy(resample_poly(
+                    converted.numpy(), source_rate // divisor, self.rate // divisor, axis=-1,
+                ).copy())
+            if not converted.numel() or not torch.isfinite(converted).all():
+                raise RuntimeError("OpenVoice produced invalid audio")
+            # Overlapping context is discarded, not appended twice. Keeping the
+            # exact original sample count prevents timing drift on long stories.
+            offset, count = start - left, end - start
+            core = converted[..., offset:offset + count]
+            output[:, start:end] = F.pad(core, (0, count - core.shape[-1]))
+        converted = output
         # The generation router applies mark_synthetic to the FINAL converted take.
         return converted
 
