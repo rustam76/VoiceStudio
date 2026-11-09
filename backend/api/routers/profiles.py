@@ -81,6 +81,9 @@ async def _auto_transcribe_reference(audio_path: str) -> str:
     including the first, uses stable conditioning. Local-only:
     transcribe_reference considers only already-installed ASR/dictation models.
     """
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite():
+        return ""  # OpenVoice conditions on tone colour; no transcript or ASR is needed.
     timeout = _reference_transcribe_timeout()
     try:
         from services.asr_backend import transcribe_reference

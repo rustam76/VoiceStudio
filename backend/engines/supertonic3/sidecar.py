@@ -191,11 +191,19 @@ def _load_tts(stdout) -> object:
     model_path = snapshot_download(
         repo_id="Supertone/supertonic-3",
         revision=revision,
+        allow_patterns=["onnx/*", "voice_styles/*", "config.json", "LICENSE", "README.md"],
+        local_files_only=os.environ.get("OMNIVOICE_STUDIO_LITE", "").lower() in {"1", "true", "yes"},
     )
 
     _send(stdout, {"op": "progress", "stage": "loading_model", "percent": 50})
 
-    _tts = TTS(model="supertonic-3", model_dir=model_path, auto_download=False)
+    thread_options = {}
+    if os.environ.get("OMNIVOICE_STUDIO_LITE", "").lower() in {"1", "true", "yes"}:
+        thread_options = {
+            "intra_op_num_threads": max(1, min(8, int(os.environ.get("SUPERTONIC_INTRA_OP_THREADS", "2")))),
+            "inter_op_num_threads": max(1, min(8, int(os.environ.get("SUPERTONIC_INTER_OP_THREADS", "1")))),
+        }
+    _tts = TTS(model="supertonic-3", model_dir=model_path, auto_download=False, **thread_options)
 
     _send(stdout, {"op": "progress", "stage": "loading_model", "percent": 100})
     return _tts

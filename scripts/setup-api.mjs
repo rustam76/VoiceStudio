@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 export function setupApi({ env = process.env, run = spawnSync } = {}) {
-  const result = run('uv', ['sync', '--frozen', '--no-default-groups', '--group', 'cpu', '--group', 'dev', '--extra', 'supertonic'], {
+  const result = run('uv', ['sync', '--project', 'deploy/online', '--frozen', '--no-default-groups'], {
     cwd: root, env, stdio: 'inherit',
   });
   if (result.error) throw result.error;

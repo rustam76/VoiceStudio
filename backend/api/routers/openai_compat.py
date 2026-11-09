@@ -1295,7 +1295,9 @@ def _model_list() -> list[dict]:
     requests route to any installed engine, while transcription always runs
     on the active ASR engine — so only that one is listed for STT."""
     data = [_model_entry(m, "tts", True) for m in OPENAI_TTS_MODELS]
-    data += [_model_entry(m, "stt", True) for m in OPENAI_STT_MODELS]
+    from core.studio_scope import enabled as studio_lite
+    if not studio_lite():
+        data += [_model_entry(m, "stt", True) for m in OPENAI_STT_MODELS]
     seen = {m["id"] for m in data}
     try:
         from services.tts_backend import list_backends
@@ -1305,6 +1307,8 @@ def _model_list() -> list[dict]:
                 data.append(_model_entry(b["id"], "tts", False))
     except Exception:
         logger.warning("Could not list TTS engines for /v1/models", exc_info=True)
+    if studio_lite():
+        return data
     try:
         from services.asr_backend import active_backend_id
         active = active_backend_id()
@@ -1406,3 +1410,10 @@ def _format_ts_vtt(seconds: float) -> str:
     """Format seconds as VTT timestamp: HH:MM:SS.mmm"""
     from services.srt_parser import format_cue_timestamp
     return format_cue_timestamp(seconds, ".")
+
+
+# The hosted narration studio exposes speech APIs, without ASR/translation routes.
+from core.studio_scope import enabled as _studio_lite
+if _studio_lite():
+    router.routes[:] = [route for route in router.routes
+                        if route.path not in {"/v1/audio/transcriptions", "/v1/audio/translations"}]

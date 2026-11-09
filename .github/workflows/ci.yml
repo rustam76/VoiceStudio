@@ -41,12 +41,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - run: uv sync --frozen --no-default-groups --group cpu --group dev --extra supertonic
+      - run: uv sync --project deploy/online --frozen --no-default-groups --group dev
       - name: Offline backend checks
         env:
+          OMP_NUM_THREADS: '2'
+          OPENBLAS_NUM_THREADS: '2'
           HF_HUB_OFFLINE: '1'
           HF_HUB_CACHE: /tmp/online-ci-empty-hf-cache
-        run: uv run --no-sync python -m pytest tests/test_docker_entrypoint.py tests/test_model_acceptance.py tests/test_admin_sessions.py tests/test_auth_principal.py tests/test_app_version.py tests/test_app_config.py -q
+        run: uv run --project deploy/online --no-sync python -m pytest tests/test_docker_entrypoint.py tests/test_model_acceptance.py tests/test_admin_sessions.py tests/test_auth_principal.py tests/test_app_version.py tests/test_app_config.py tests/test_studio_lite.py -q
       - run: bun install --frozen-lockfile --ignore-scripts
       - run: bun run test:frontend && bun run typecheck && bun run test
       - name: Build web and CPU container

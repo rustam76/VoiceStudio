@@ -3,16 +3,11 @@ import { ContextSidebar } from './context-sidebar';
 import { CommandPalette } from '@/components/command-palette';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { BackendGate } from '../backend-gate';
-import { RepairAgentDock } from './repair-agent-dock';
 import { isMac } from '../bridge';
 import { cn } from '@/lib/utils';
-import { useBackendStatus } from '@/hooks/use-backend-status';
-import { isBackendReachable } from '@shared/utils/backendStage';
-import { AccountCorner } from './account-corner';
 import { NowPlayingDock } from '@/components/now-playing-dock';
 
 export function AppShell() {
-  const backend = useBackendStatus();
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
@@ -42,11 +37,10 @@ export function AppShell() {
               <div className="min-h-0 flex-1 overflow-hidden">
                 <Outlet />
               </div>
-              <RepairAgentDock />
             </SettingsWorkspace>
           </>
         ) : (
-          <BackendGate repairDock={<RepairAgentDock />}>
+          <BackendGate>
             <CommandPalette />
             <WorkspaceSidebar />
             <ContextSidebar />
@@ -57,7 +51,6 @@ export function AppShell() {
               <div className="min-h-0 flex-1 overflow-hidden">
                 <Outlet />
               </div>
-              <RepairAgentDock />
             </main>
           </BackendGate>
         )}
@@ -66,7 +59,6 @@ export function AppShell() {
       {/* Native drag-region hit testing follows document order. Keep these
           no-drag controls after every workspace titlebar, outside BackendGate. */}
       {/* Top-right corner on every page and platform: account, then the notifications bell. */}
-      <AccountCorner notificationsEnabled={isBackendReachable(backend.stage)} />
     </div>
   );
 }

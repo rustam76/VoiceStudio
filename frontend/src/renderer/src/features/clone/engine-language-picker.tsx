@@ -11,6 +11,7 @@ export function EngineLanguagePicker({
   return (
     <LanguagePicker
       {...props}
+      options={['Indonesian', 'English']}
       recentsScope="tts"
       supportedOptions={names}
       modelLabel={modelLabel}

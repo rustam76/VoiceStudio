@@ -296,6 +296,11 @@ function useGenerateController(): UseGenerateClone {
     async (design?: DesignGenerateInput) => {
       const settings = cloneSettingsStore.state;
       const reference = referenceStore.state;
+      const usesPreset =
+        presetOnly ||
+        (Boolean(activeTts?.preset_voices?.length) &&
+          !settings.selectedProfileId &&
+          !reference.file?.size);
       if (
         !cachedTtsLanguagesSupported(queryClient, design ? 'tts' : 'clone', [
           design?.language ?? settings.language,
@@ -317,7 +322,7 @@ function useGenerateController(): UseGenerateClone {
           : blocker ||
             !settings.text.trim() ||
             // A preset-only engine speaks its preset voice: no clip or profile.
-            (!presetOnly && !settings.selectedProfileId && !reference.file?.size)
+            (!usesPreset && !settings.selectedProfileId && !reference.file?.size)
       ) {
         if (blocker === 'reference') setWorkspace({ panel: 'voice' });
         return;
@@ -356,7 +361,7 @@ function useGenerateController(): UseGenerateClone {
         // preset voice take keeps working with a leftover instruct (#3413).
         const style =
           design?.instruct ??
-          (presetOnly && activeTts?.supports_voice_design === false ? '' : settings.instruct);
+          (usesPreset && activeTts?.supports_voice_design === false ? '' : settings.instruct);
         // Delivery direction is a per-engine draft like IndexTTS2 emotion: only
         // engines whose instruct steers a clone receive it; others never see it.
         const direction = !design && sendsDirection ? settings.direction.trim() : '';

@@ -42,6 +42,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from services.subprocess_backend import SubprocessBackend
+from core.studio_scope import enabled as _studio_lite
 from engines.supertonic3 import constants as st3_constants
 
 if TYPE_CHECKING:
@@ -79,8 +80,11 @@ class Supertonic3Backend(SubprocessBackend):
 
     id = "supertonic3"
     display_name = "Supertonic-3 (31 langs, CPU ONNX, 7 preset voices, OpenRAIL-M)"
-    supports_voice_design = False  # preset voices only
-    supports_cloning = False  # preset voices only; generate() never reads ref_audio
+    supports_voice_design = False  # source voices are presets; cloning uses the converter
+    supports_cloning = _studio_lite()
+    requires_reference_transcript = not _studio_lite()
+    if _studio_lite():
+        display_name = "Supertonic-3 + OpenVoice V2 (CPU, Indonesian / English)"
     # num_step forwards to the SDK's total_steps; guidance has no counterpart
     # in generate()'s honored kwargs, so explicit values 400 (#3654).
     supports_guidance_scale = False
@@ -181,7 +185,7 @@ class Supertonic3Backend(SubprocessBackend):
         # 31 ISO codes + "na" fallback per the SDK; we expose "multi" on
         # the protocol surface (same approach as OmniVoice / CosyVoice)
         # and translate the caller's language at synthesize time.
-        return ["multi"]
+        return ["en", "id"] if _studio_lite() else ["multi"]
 
     # ── extra env for the sidecar (T-03-02 mitigation) ─────────────────
 
@@ -234,6 +238,10 @@ class Supertonic3Backend(SubprocessBackend):
             voice = st3_constants.DEFAULT_VOICE
 
         language = kw.get("language")
+        if _studio_lite() and language in (None, "auto", "Auto", "na"):
+            language = "id"
+        if _studio_lite() and language not in (None, "auto", "Auto", "na", "en", "id", "English", "Indonesian"):
+            raise ValueError("This studio supports Indonesian and English only")
         speed = float(kw.get("speed", 1.0))
         speed = max(0.7, min(2.0, speed))
 
@@ -250,7 +258,17 @@ class Supertonic3Backend(SubprocessBackend):
             "speed": speed,
             "total_steps": total_steps,
         }
-        return super().generate(text, **forwarded)
+        audio = super().generate(text, **forwarded)
+        if _studio_lite() and kw.get("ref_audio"):
+            from engines.openvoice_v2.converter import convert
+            audio = convert(audio, self.sample_rate, kw["ref_audio"])
+        return audio
+
+    def unload(self) -> None:
+        super().unload()
+        if _studio_lite():
+            from engines.openvoice_v2.converter import unload
+            unload()
 
 
 __all__ = ["Supertonic3Backend", "SUPERTONIC3_SIDECAR_SCRIPT"]

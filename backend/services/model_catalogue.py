@@ -59,6 +59,10 @@ def shares_repo(model: dict, models: "list[dict] | None" = None) -> bool:
 
 
 KNOWN_MODELS = _load_models_from_yaml()
+from core.studio_scope import enabled as _studio_lite
+if _studio_lite():
+    KNOWN_MODELS = [model for model in KNOWN_MODELS
+                    if model["repo_id"] in {"Supertone/supertonic-3", "myshell-ai/OpenVoiceV2"}]
 
 
 def catalogue_entry(key: str, models: "list[dict] | None" = None) -> "dict | None":

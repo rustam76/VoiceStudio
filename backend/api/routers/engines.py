@@ -58,6 +58,9 @@ def _visible_active_backend(family: str, selected_id: str) -> str:
 
 def _family_payload(family: str, module):
     """Public inventory plus whether an environment pin owns this family."""
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite() and family != "tts":
+        return {"active": "off", "active_model": None, "env_override": True, "backends": []}
     configured_id = module.active_backend_id()
     # Older MPS preferences point at a valid but deliberately unlisted alias.
     active = _visible_active_backend(family, configured_id)
@@ -986,6 +989,9 @@ def select_engine(req: SelectEngineRequest):
     brick a pipeline by picking an engine that needs a GPU this machine lacks.
     A `cpu_fallback` pick is allowed (it runs, just slower) — only a hard
     `unavailable` is blocked. LLM is never routing-gated (its status is "n/a")."""
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite() and req.family != "tts":
+        raise HTTPException(400, "This studio provides narration only")
     family = _FAMILIES.get(req.family)
     if not family:
         raise HTTPException(400, f"Unknown family: {req.family}. Expected one of tts/asr/llm.")

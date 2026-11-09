@@ -4290,7 +4290,9 @@ def list_backends(*, include_hidden: bool = False) -> list[dict]:
     installable = _sidecar_installable_ids()
 
     out: list[dict] = []
-    for bid, cls in _REGISTRY.items():
+    from core.studio_scope import enabled as studio_lite
+    entries = (("supertonic3", _REGISTRY["supertonic3"]),) if studio_lite() else _REGISTRY.items()
+    for bid, cls in entries:
         if not include_hidden and caps.family == "mps" and bid == "omnivoice-subprocess":
             continue
         cls = _effective_backend_class(bid, cls, caps.family)
@@ -4476,6 +4478,9 @@ def _effective_backend_class(
 
 
 def get_backend_class(backend_id: str) -> type[TTSBackend]:
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite() and backend_id != "supertonic3":
+        raise ValueError("This studio provides Supertonic-3 with OpenVoice V2 only")
     if backend_id not in _REGISTRY:
         raise ValueError(f"Unknown TTS backend: {backend_id!r}. Known: {list(_REGISTRY)}")
     return _effective_backend_class(backend_id, _REGISTRY[backend_id])
@@ -4499,6 +4504,9 @@ def language_options(backend_id: str) -> Optional[list[str]]:
     Adapter constructors configure references only. Never load weights or call
     get_active_tts_backend here: discovery must not switch or unload an engine.
     """
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite():
+        return ["English", "Indonesian"]
     from omnivoice.utils.lang_map import APP_LANGUAGE_NAMES, LANG_NAME_TO_ID
     from core.language_variants import with_variant_names
 

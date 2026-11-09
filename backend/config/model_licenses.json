@@ -2144,8 +2144,8 @@
       "configured_at": "backend/engines/supertonic3/constants.py:31",
       "notes": "Licence identifier is upstream model-card metadata, not verified permission for this distribution. Component terms and attribution text require review.",
       "runtime_revision": "724fb5abbf5502583fb520898d45929e62f02c0b",
-      "runtime_pin_scope": "external",
-      "runtime_pin_source": "backend/engines/supertonic3/constants.py",
+      "runtime_pin_scope": "central",
+      "runtime_pin_source": "backend/services/hf_revisions.py; backend/engines/supertonic3/constants.py",
       "component_closure": "incomplete",
       "commercial_inference": "unknown",
       "commercial_outputs": "unknown",
@@ -3652,6 +3652,30 @@
           "lexicon.txt"
         ]
       }
+    },
+    {
+      "id": "myshell-ai/OpenVoiceV2",
+      "license": "mit",
+      "commercial_use": false,
+      "review_status": "unreviewed",
+      "credit": "MyShell.ai / OpenVoice contributors",
+      "source_url": "https://huggingface.co/myshell-ai/OpenVoiceV2",
+      "evidence_url": "https://huggingface.co/myshell-ai/OpenVoiceV2/blob/f36e7edfe1684461a8343844af60babc2efbb727/README.md",
+      "revision": "f36e7edfe1684461a8343844af60babc2efbb727",
+      "engines": [
+        "supertonic3"
+      ],
+      "configured_at": "backend/engines/openvoice_v2/converter.py",
+      "notes": "Upstream explicitly offers V2 for free commercial use under MIT. Only the converter is used; no MeloTTS or reference ASR. Voice/reference rights remain the user's responsibility.",
+      "runtime_revision": "f36e7edfe1684461a8343844af60babc2efbb727",
+      "runtime_pin_scope": "central",
+      "component_closure": "incomplete",
+      "commercial_inference": "unknown",
+      "commercial_outputs": "unknown",
+      "upstream_access": "not_required",
+      "required_components": [],
+      "documents": [],
+      "artifacts": []
     }
   ],
   "dynamic_assets": [

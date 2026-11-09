@@ -4,7 +4,7 @@ import { useProfiles } from './use-profiles';
 import { useCloneSettings } from '@/lib/store/clone-settings';
 import { recordingBusyStore, useReference } from '@/lib/store/reference';
 import { cloneBlocker } from '@/lib/clone-readiness';
-import { isPresetOnly, useTtsReadiness } from './use-tts-readiness';
+import { useTtsReadiness } from './use-tts-readiness';
 import { useEngines } from './use-engines';
 export function useCloneInputsReadiness() {
   const demo = useCloneDemo();
@@ -20,7 +20,9 @@ export function useCloneInputsReadiness() {
     profiles: profiles.isError ? [] : profiles.data,
     fileSize: reference.file?.size ?? 0,
     busy: recording || reference.pending,
-    needsReference: !isPresetOnly(activeTts),
+    needsReference:
+      !activeTts?.preset_voices?.length ||
+      Boolean(settings.selectedProfileId || reference.file?.size),
   });
 }
 

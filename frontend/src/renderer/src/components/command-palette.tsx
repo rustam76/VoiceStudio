@@ -361,7 +361,22 @@ export function CommandPalette() {
         run: () => navigate({ to: entry.to }),
       }))
     : [];
-  const items = [...source, ...settingsItems]
+  const removed = new Set([
+    'design',
+    'dub',
+    'batch',
+    'audiobook',
+    'gallery',
+    'transcriptions',
+    'transcribe',
+    'workflows',
+    'calls',
+    'tools',
+    'integrations',
+    'projects',
+    'pro',
+  ]);
+  const items = [...source.filter((item) => !removed.has(item.id)), ...settingsItems]
     .filter((item) => commandMatches(item, query))
     .slice(0, 30);
   const run = (index: number) => {

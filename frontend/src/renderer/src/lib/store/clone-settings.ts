@@ -58,7 +58,7 @@ export interface CloneSettings {
 
 export const DEFAULT_CLONE_SETTINGS: CloneSettings = {
   text: '',
-  language: 'Auto',
+  language: 'Indonesian',
   refText: '',
   instruct: '',
   emotionMode: 'none',

@@ -119,7 +119,7 @@ export function SettingsNav({
   const sections = preferenceSections.filter((section) => sectionMatches(t, section, needle));
   const extraMatches = extras.filter((item) => keysMatch(t, item.fields, needle));
   const onModels = location.kind === 'models';
-  const families = matchingFamilies(t, needle, onModels);
+  const families = matchingFamilies(t, needle, onModels).filter((family) => family === 'tts');
   const pinned = {
     models: keysMatch(t, pinnedPages.models, needle),
     media: keysMatch(t, pinnedPages.media, needle),
@@ -224,7 +224,7 @@ export function SettingsNav({
                 current={location.kind === 'extra' && location.to === to}
               />
             ))}
-          {pinned.media && (
+          {false && pinned.media && (
             <NavLink
               to="/settings/media"
               label={t('settings.audio_tools')}

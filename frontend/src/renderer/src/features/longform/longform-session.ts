@@ -90,7 +90,7 @@ export const blankLongformDraft = (): Draft => ({
   title: '',
   voice: null,
   format: 'm4b',
-  language: 'Auto',
+  language: 'Indonesian',
   output: '',
   outputScript: '',
   outputChapters: [],

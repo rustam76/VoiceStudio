@@ -9,7 +9,7 @@ test('API setup installs only the frozen CPU environment', () => {
   const status = setupApi({ env, run: (...args) => { calls.push(args); return { status: 0 }; } });
   assert.equal(status, 0);
   assert.equal(calls[0][0], 'uv');
-  assert.deepEqual(calls[0][1], ['sync', '--frozen', '--no-default-groups', '--group', 'cpu', '--group', 'dev', '--extra', 'supertonic']);
+  assert.deepEqual(calls[0][1], ['sync', '--project', 'deploy/online', '--frozen', '--no-default-groups']);
   assert.equal(calls[0][2].env, env);
 });
 

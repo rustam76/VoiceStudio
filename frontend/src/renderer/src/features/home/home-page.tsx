@@ -78,6 +78,7 @@ export function HomePage() {
   });
   const { data: dubProjects = [] } = useQuery({
     queryKey: ['projects'],
+    enabled: false,
     queryFn: ({ signal }) => apiJson<DubProject[]>('/projects', { signal }),
   });
   const { data: longformProjects = [] } = useQuery({
@@ -85,51 +86,8 @@ export function HomePage() {
     queryFn: projectLibrary.list,
   });
   const destinations: Destination[] = [
-    {
-      to: '/clone',
-      label: t('nav.clone'),
-      description: t('clone.reference_hint'),
-    },
-    {
-      to: '/design',
-      label: t('designWorkspace.title'),
-      description: t('homeUi.design'),
-    },
-    {
-      to: '/dub',
-      label: t('dubWorkspace.title'),
-      description: t('homeUi.dub'),
-    },
-    {
-      to: '/stories',
-      label: t('nav.stories'),
-      description: t('homeUi.stories'),
-    },
-    {
-      to: '/audiobook',
-      label: t('audiobook.title'),
-      description: t('homeUi.audiobook'),
-    },
-    {
-      to: '/gallery',
-      label: t('nav.gallery'),
-      description: t('gallery.subtitle'),
-    },
-    {
-      to: '/transcriptions',
-      label: t('nav.transcribe'),
-      description: t('homeUi.transcribe'),
-    },
-    {
-      to: '/workflows',
-      label: t('workflows.title'),
-      description: t('workflows.description'),
-    },
-    {
-      to: '/tools',
-      label: t('tools.title'),
-      description: t('tools.desc'),
-    },
+    { to: '/clone', label: t('nav.clone'), description: t('clone.reference_hint') },
+    { to: '/stories', label: t('nav.stories'), description: t('homeUi.stories') },
   ];
   const recentProjects = [
     ...dubProjects.map((project) => ({

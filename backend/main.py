@@ -776,60 +776,64 @@ def _phase_a_build_inner() -> None:
     model_loads_reset_shutdown = _mm_reset_shutdown
 
     _startup_progress.begin_step("api_routes")
-    from api.routers import (
-        system,
-        profiles,
-        profile_images,
-        exports,
-        generation,
-        dub_core,
-        dub_generate,
-        dub_export,
-        dub_translate,
-        projects,
-        glossary,
-        engines,
-        tools,
-        stories,
-        setup,
-        gallery,
-        archetypes,
-        describe_voice,
-        community,
-        batch,
-        watermark,
-        events,
-        capture,
-        capture_ws,
-        speech_platform,
-        dictation,
-        openai_compat,
-        tts_stream,
-        marketplace,
-        personas,
-        sonitranslate,
-        audiobook,
-        longform_jobs,
-        pronunciation,  # Expressive-TTS Spec 01: user pronunciation dictionary
-        settings as settings_router,  # Phase 1 AUTH-03: HF token save/clear/state
-        media_tools as media_tools_router,  # Audio tools: ffmpeg/ffprobe/yt-dlp
-        auth as auth_router,
-        voice_convert,  # Studio Convert: speech-to-speech via ASR → TTS
-    )
-    from api.routers import mcp_bindings as _mcp_bindings_router  # noqa: E402
-    from api.routers import telephony_twilio as _telephony_twilio_router  # noqa: E402
-    from api.routers import calls as _calls_router  # noqa: E402
-    from api.routers import cloud_sync as _cloud_sync_router  # noqa: E402
-    _router_modules.extend([
-        system, profiles, profile_images, exports, generation, voice_convert, dub_core, dub_generate,
-        dub_export, dub_translate, projects, glossary, engines, tools,
-        stories, setup, gallery, archetypes, describe_voice, community,
-        batch, watermark, events, capture, capture_ws, speech_platform, dictation,
-        openai_compat, tts_stream, marketplace, personas, sonitranslate,
-        audiobook, longform_jobs, pronunciation, settings_router,
-        media_tools_router, auth_router, _mcp_bindings_router,
-        _telephony_twilio_router, _calls_router, _cloud_sync_router,
-    ])
+    from core.studio_scope import enabled as studio_lite, ROUTERS
+    if studio_lite():
+        _router_modules.extend(importlib.import_module(f"api.routers.{name}") for name in ROUTERS)
+    else:
+        from api.routers import (
+            system,
+            profiles,
+            profile_images,
+            exports,
+            generation,
+            dub_core,
+            dub_generate,
+            dub_export,
+            dub_translate,
+            projects,
+            glossary,
+            engines,
+            tools,
+            stories,
+            setup,
+            gallery,
+            archetypes,
+            describe_voice,
+            community,
+            batch,
+            watermark,
+            events,
+            capture,
+            capture_ws,
+            speech_platform,
+            dictation,
+            openai_compat,
+            tts_stream,
+            marketplace,
+            personas,
+            sonitranslate,
+            audiobook,
+            longform_jobs,
+            pronunciation,  # Expressive-TTS Spec 01: user pronunciation dictionary
+            settings as settings_router,  # Phase 1 AUTH-03: HF token save/clear/state
+            media_tools as media_tools_router,  # Audio tools: ffmpeg/ffprobe/yt-dlp
+            auth as auth_router,
+            voice_convert,  # Studio Convert: speech-to-speech via ASR → TTS
+        )
+        from api.routers import mcp_bindings as _mcp_bindings_router  # noqa: E402
+        from api.routers import telephony_twilio as _telephony_twilio_router  # noqa: E402
+        from api.routers import calls as _calls_router  # noqa: E402
+        from api.routers import cloud_sync as _cloud_sync_router  # noqa: E402
+        _router_modules.extend([
+            system, profiles, profile_images, exports, generation, voice_convert, dub_core, dub_generate,
+            dub_export, dub_translate, projects, glossary, engines, tools,
+            stories, setup, gallery, archetypes, describe_voice, community,
+            batch, watermark, events, capture, capture_ws, speech_platform, dictation,
+            openai_compat, tts_stream, marketplace, personas, sonitranslate,
+            audiobook, longform_jobs, pronunciation, settings_router,
+            media_tools_router, auth_router, _mcp_bindings_router,
+            _telephony_twilio_router, _calls_router, _cloud_sync_router,
+        ])
     # Download-acceleration state, once, for triage-from-logs (FDL-03).
     try:
         from api.routers.system import _fast_download_status as _fd_status
@@ -859,7 +863,8 @@ def _phase_a_finalize() -> None:
     # app.state for Phase B to run. Opt-out via OMNIVOICE_MCP_DISABLE=1;
     # best-effort (SystemExit included, #1156) so a missing mcp package
     # never breaks startup.
-    if os.environ.get("OMNIVOICE_MCP_DISABLE", "").strip().lower() not in ("1", "true", "yes", "on"):
+    from core.studio_scope import enabled as studio_lite
+    if not studio_lite() and os.environ.get("OMNIVOICE_MCP_DISABLE", "").strip().lower() not in ("1", "true", "yes", "on"):
         try:
             from mcp_server import mount_mcp
             mount_mcp(app)
@@ -1058,9 +1063,10 @@ async def _phase_b(app: FastAPI) -> None:
     # Network sharing is loopback-only by default; seed the (disabled) state
     # so the middleware and /system/network/state always have something to read.
     app.state.network_share = network_share.get_state()
-    from api.routers.gallery import _init_gallery_db
-
-    _init_gallery_db()
+    from core.studio_scope import enabled as studio_lite
+    if not studio_lite():
+        from api.routers.gallery import _init_gallery_db
+        _init_gallery_db()
     # Seed a demo voice profile on first run (empty DB only).
     from core.onboarding import seed_sample_project
     seed_sample_project()
@@ -1120,7 +1126,8 @@ async def _phase_b(app: FastAPI) -> None:
     # on a cold disk), and nothing the first screen shows depends on the result,
     # so it runs in the background instead of holding /health at 503. The model
     # warm-ups below await it, so they still load the reconciled selections.
-    _start_profile_reconcile(app)
+    if not studio_lite():
+        _start_profile_reconcile(app)
     if _EAGER:
         # Eager boots (pytest, OMNIVOICE_EAGER_INIT=1) promise the classic
         # synchronous startup: callers read engines the moment the lifespan
@@ -1234,26 +1241,27 @@ async def _phase_b(app: FastAPI) -> None:
     app.state.mcp_task = mcp_task
     app.state.mcp_stop = mcp_stop
 
-    # VoiceStudio Cloud settings sync: idles (no Cloud call) unless main hands
-    # out a token, i.e. the user is signed in with sync switched on.
-    from services.cloud_sync.service import get_service as _cloud_sync
+    if not studio_lite():
+        # VoiceStudio Cloud settings sync: idles (no Cloud call) unless main hands
+        # out a token, i.e. the user is signed in with sync switched on.
+        from services.cloud_sync.service import get_service as _cloud_sync
 
-    async def _start_cloud_sync() -> None:
+        async def _start_cloud_sync() -> None:
+            try:
+                await _cloud_sync().start()
+            except Exception:  # noqa: BLE001 — optional feature: never blocks start-up
+                logger.exception("cloud sync did not start")
+
+        app.state.cloud_sync_task = asyncio.create_task(_start_cloud_sync())
+        if mcp_mounted:
+            logger.info("MCP server mounted at /mcp")
+        # Phone calls (opt-in): the separate loopback telephony listener resumes
+        # only when the user left the Twilio integration enabled.
         try:
-            await _cloud_sync().start()
-        except Exception:  # noqa: BLE001 — optional feature: never blocks start-up
-            logger.exception("cloud sync did not start")
-
-    app.state.cloud_sync_task = asyncio.create_task(_start_cloud_sync())
-    if mcp_mounted:
-        logger.info("MCP server mounted at /mcp")
-    # Phone calls (opt-in): the separate loopback telephony listener resumes
-    # only when the user left the Twilio integration enabled.
-    try:
-        from api.routers.telephony_twilio import start_gateway_if_enabled
-        await start_gateway_if_enabled()
-    except Exception:
-        logger.exception("Telephony gateway startup failed (continuing without it)")
+            from api.routers.telephony_twilio import start_gateway_if_enabled
+            await start_gateway_if_enabled()
+        except Exception:
+            logger.exception("Telephony gateway startup failed (continuing without it)")
 
 
 @asynccontextmanager

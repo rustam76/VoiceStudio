@@ -23,7 +23,8 @@ test('hosting serves the full authenticated backend and preserves persistent sto
   const docker = read('deploy/online/Dockerfile');
   assert.doesNotMatch(docker, /electron\/|online:app/);
   assert.match(docker, /backend\.main:app/);
-  assert.match(docker, /--group cpu/);
+  assert.match(docker, /COPY deploy\/online\/pyproject.toml deploy\/online\/uv.lock/);
+  assert.match(docker, /OMNIVOICE_STUDIO_LITE=1/);
   assert.match(docker, /USER studio/);
   assert.match(docker, /COPY frontend\/src frontend\/src/);
   const compose = read('docker-compose.yml');

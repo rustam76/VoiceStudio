@@ -1,10 +1,14 @@
 # VoiceStudio Web
 
-Versi web lengkap VoiceStudio dari upstream, tanpa aplikasi desktop atau mobile.
-UI mempertahankan sidebar, halaman Home, voice cloning/design, dubbing,
-transkripsi, audiobooks, history, pengaturan dan pengelolaan model. Fitur yang
-membutuhkan perangkat/bridge native tetap mengikuti dukungan browser upstream;
-keberadaan menu tidak berarti setiap engine sudah terpasang atau cocok untuk CPU.
+Studio web untuk narasi YouTube: bahasa Indonesia dan Inggris, voice cloning,
+profil suara, Stories beberapa karakter, riwayat, pemutar/unduh, dan REST API.
+Workflow, panggilan, dubbing/video, transkripsi, penerjemah, LLM dan Cloud tidak
+aktif pada deployment ini. Aplikasi desktop/mobile tidak disertakan.
+
+Narasi memakai Supertonic-3 (OpenRAIL-M); cloning memakai konverter tone colour
+OpenVoice V2 (MIT). Keduanya berjalan di CPU. OpenVoice mengubah warna suara,
+bukan menjamin menyalin seluruh aksen/emosi; hasil Indonesia perlu didengarkan.
+Model multilingual tetap utuh, meskipun pilihan bahasa dibatasi ke dua bahasa.
 
 Frontend: `frontend/src/renderer/src/main.tsx`. Backend: `backend/main.py`.
 Versi mengikuti snapshot upstream dalam root package.json; tidak dibump manual.
@@ -28,12 +32,12 @@ Default binding host tetap 127.0.0.1. Gunakan domain HTTPS/reverse proxy, lalu i
 VOICESTUDIO_PUBLIC_URL=https://voice.example.com
 OMNIVOICE_ALLOWED_HOSTS=voice.example.com
 OMNIVOICE_ALLOWED_ORIGINS=https://voice.example.com
-OMNIVOICE_MCP_ALLOWED_HOSTS=voice.example.com
 ```
 
 Buka web dan login dengan kunci yang sama. Backend dijalankan dalam server mode,
 sehingga admin API tetap membutuhkan autentikasi. Cookie memakai CSRF bawaan.
-API: `/docs`, `/openapi.json`, `/generate`, `/history`; MCP: `/mcp`.
+API: `/docs`, `/openapi.json`, `/generate`, `/history`, dan `/v1/audio/speech`.
+MCP tidak dimuat; integrasi audio menggunakan REST API.
 Klien API memakai `Authorization: Bearer <OMNIVOICE_API_KEY>`.
 
 Engine awal tetap Supertonic-3. Pada deployment lama, cache model serta database
@@ -41,20 +45,33 @@ menggunakan volume `studio-data:/data` yang sama: tidak perlu menghapus volume.
 Untuk menyiapkan model secara eksplisit dari Terminal service `studio`:
 
 ```sh
-HF_HUB_OFFLINE=0 python /app/scripts/online-model.py
+HF_HUB_OFFLINE=0 python /app/scripts/online-model.py --cloning
 ```
 
-Baca dan terima lisensi model di UI sebelum generate. Pengaturan dan instalasi
-engine lain dilakukan dari UI; model tambahan memerlukan storage/komputasi
-sendiri dan tidak semuanya cocok untuk VPS CPU. VoiceStudio AGPL-3.0-only;
-SDK/model punya lisensi tersendiri, termasuk pembatasan model nonkomersial.
-Notices dan atribusi dipertahankan; sediakan corresponding source fork yang
-sebenarnya jika aplikasi dimodifikasi dan ditawarkan melalui jaringan.
+Baca dan terima lisensi Supertonic di UI sebelum generate. Unduhan model
+merupakan tindakan eksplisit; startup dan cloning hanya membaca cache lokal.
+OpenVoice V2 memakai sekitar 131 MB tambahan, di luar model Supertonic.
+Gunakan rekaman suara milik sendiri atau yang izinnya mencakup pemakaian ini.
+Untuk YouTube monetisasi: OpenVoice V2 mengizinkan penggunaan komersial;
+Supertonic tetap tunduk pada OpenRAIL-M, termasuk pengungkapan suara sintetis.
+OmniVoice tidak disediakan karena bobotnya berlisensi nonkomersial.
 
-Image CPU sekarang memakai dependency backend lengkap, sehingga lebih besar
-daripada image narasi minimal. Batas awal Compose 2 CPU/4 GiB bukan jaminan
-untuk cloning, dub, ASR atau semua model. Background capture/watermark warm-up
-dinonaktifkan; watermark output tetap melalui mark_synthetic.
+Image menggunakan lockfile khusus `deploy/online/uv.lock`, tanpa WhisperX,
+Demucs, Gradio, penerjemah, LLM/MCP dan paket pelatihan. PyTorch CPU tetap
+perlu untuk konverter dan provenance. Batas awal Compose 2 CPU/4 GiB perlu
+disesuaikan berdasarkan panjang audio dan RAM VPS. Background ASR, pemindaian
+profil performa dan Cloud dihentikan; hasil akhir tetap melalui mark_synthetic.
+
+Contoh integrasi (ID profil diperoleh dari `GET /profiles` setelah unggah suara):
+
+```sh
+curl -X POST "$VOICE_URL/generate" \
+  -H "Authorization: Bearer $VOICE_API_KEY" \
+  -F 'text=Halo, selamat datang di channel saya.' \
+  -F 'language=Indonesian' -F "profile_id=$VOICE_PROFILE_ID"
+```
+
+Respons memuat lokasi audio; rincian parameter tersedia di `/docs`.
 
 ## Development dan pemeriksaan
 
@@ -68,12 +85,12 @@ bun run test:frontend
 bun run test
 bun run build:web
 HF_HUB_OFFLINE=1 HF_HUB_CACHE=/tmp/voicestudio-empty-hf \
-  uv run --no-sync python -m pytest tests/test_docker_entrypoint.py -q
+  uv run --project deploy/online --group dev python -m pytest tests/test_docker_entrypoint.py -q
 ```
 
-`setup:api` memakai root uv.lock, grup CPU dan extra Supertonic. Optional engine
-lain tetap mengikuti mekanisme instalasi upstream. Desktop/mobile/store build
-dan publikasi installer tidak ada dalam script atau CI aktif.
+`setup:api` memakai lockfile runtime khusus di `deploy/online/`. `dev:api`
+menyalakan scope studio ringan yang sama dengan Docker. Test tooling memakai
+grup `dev` terpisah, bukan dependency image produksi.
 
 ## Update, backup dan restore
 
@@ -86,4 +103,4 @@ lama setelah migrasi tanpa restore backup yang sesuai.
 
 Upstream bisa diperbarui secara selektif; jangan mengembalikan runtime native
 atau menimpa konfigurasi hosting secara otomatis. Tes hosting menjaga entry
-aplikasi lengkap dan menolak folder desktop/mobile.
+aplikasi web dan menolak folder desktop/mobile.

@@ -1,4 +1,3 @@
-import { NativeDictationSync } from '@/hooks/use-native-dictation';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GenerationProvider } from '@/hooks/use-generate';
@@ -11,8 +10,6 @@ import { router } from './router';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { UpdateRestartConfirm } from '@/components/update-restart-confirm';
 import { AnalyticsConsentBanner, AnalyticsRuntime } from '@/components/analytics-consent';
-import { GpuOfferBanner } from '@/components/gpu-offer';
-import { CloudSyncRuntime } from '@/features/account/cloud-sync-runtime';
 import { getBridge } from '@/components/bridge';
 import { FirstSoundHandoff } from '@/components/first-sound-handoff';
 import { stepAppearanceScale } from '@/hooks/use-appearance';
@@ -88,14 +85,11 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
         <WebAuthGate>
-          <NativeDictationSync />
           <ModelInstallSync />
           <RealtimeEventSync />
           <GenerateBudgetSync />
           <AnalyticsRuntime />
-          <CloudSyncRuntime />
           <AnalyticsConsentBanner />
-          <GpuOfferBanner />
           <GenerationProvider>
             <FirstSoundHandoff />
             <TooltipProvider>

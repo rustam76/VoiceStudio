@@ -99,3 +99,13 @@ reproduced verbatim in [`LICENSE`](LICENSE). The authoritative copy lives at
 > corporate license scanners that gate adoption) can identify it as
 > `AGPL-3.0-only` rather than falling back to "Other" / `NOASSERTION`.
 
+
+### OpenVoice V2 converter
+
+The acoustic model modules in `backend/engines/openvoice_v2/vendor/` are from
+MyShell.ai OpenVoice (MIT), pinned to commit
+`74a1d147b17a8c3092dd5430504bd83ef6c7eb23`. Imports were made relative.
+The converter/STFT integration is adapted from the same project's MIT code.
+The full copyright and permission notice is retained in that directory's LICENSE.
+OpenVoice V2 pretrained converter terms are MIT, per its pinned model card:
+https://huggingface.co/myshell-ai/OpenVoiceV2/blob/f36e7edfe1684461a8343844af60babc2efbb727/README.md

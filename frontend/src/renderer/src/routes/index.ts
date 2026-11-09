@@ -6,53 +6,19 @@ import { NotFoundPage } from '@/components/not-found-page';
 const HomePage = lazyRouteComponent(() => import('@/features/home/home-page'), 'HomePage');
 
 const ClonePage = lazyRouteComponent(() => import('@/features/clone/clone-page'), 'ClonePage');
-const DesignPage = lazyRouteComponent(() => import('@/features/design/design-page'), 'DesignPage');
-const DubPage = lazyRouteComponent(() => import('@/features/dub/dub-page'), 'DubPage');
-const BatchPage = lazyRouteComponent(() => import('@/features/batch/batch-page'), 'BatchPage');
-const GalleryPage = lazyRouteComponent(
-  () => import('@/features/gallery/gallery-page'),
-  'GalleryPage',
-);
-const TranscriptionsPage = lazyRouteComponent(
-  () => import('@/features/transcriptions/transcriptions-page'),
-  'TranscriptionsPage',
-);
+
 const StoriesPage = lazyRouteComponent(
   () => import('@/features/longform/longform-page'),
   'StoriesPage',
 );
-const AudiobookPage = lazyRouteComponent(
-  () => import('@/features/longform/longform-page'),
-  'AudiobookPage',
-);
-const ProjectsPage = lazyRouteComponent(
-  () => import('@/features/projects/projects-page'),
-  'ProjectsPage',
-);
-const WorkflowsPage = lazyRouteComponent(
-  () => import('@/features/workflows/workflows-page'),
-  'WorkflowsPage',
-);
+
 // Calls lives beside the workflow canvas (a call step hands off to it), so it
 // shares the page but opens on the Calls view instead of the canvas.
-const CallsPage = lazyRouteComponent(
-  () => import('@/features/workflows/workflows-page'),
-  'WorkflowCallsPage',
-);
-const ToolsPage = lazyRouteComponent(() => import('@/features/tools/tools-page'), 'ToolsPage');
-const IntegrationsPage = lazyRouteComponent(
-  () => import('@/features/integrations/integrations-page'),
-  'IntegrationsPage',
-);
-const IntegrationDetailPage = lazyRouteComponent(
-  () => import('@/features/integrations/integration-detail-page'),
-  'IntegrationDetailPage',
-);
+
 const SettingsPage = lazyRouteComponent(
   () => import('@/features/settings/settings-page'),
   'SettingsPage',
 );
-const ProPage = lazyRouteComponent(() => import('@/features/pro/pro-page'), 'ProPage');
 
 export const rootRoute = createRootRoute({ component: AppShell });
 
@@ -116,19 +82,25 @@ export const catchAllRoute = createRoute({
 export const transcriptionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/transcriptions',
-  component: TranscriptionsPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 
 export const designRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/design',
-  component: DesignPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 
 export const dubRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dub',
-  component: DubPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 
 export const logsRoute = createRoute({
@@ -140,38 +112,52 @@ export const logsRoute = createRoute({
 export const galleryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/gallery',
-  component: GalleryPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 
 export const batchRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/batch',
-  component: BatchPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const callsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/calls',
-  component: CallsPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const workflowsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/workflows',
-  component: WorkflowsPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const toolsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/tools',
-  component: ToolsPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const integrationsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/integrations',
-  component: IntegrationsPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const integrationDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/integrations/$slug',
-  component: IntegrationDetailPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const mediaRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -186,7 +172,9 @@ export const pronunciationRoute = createRoute({
 export const projectsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/projects',
-  component: ProjectsPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const storiesRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -196,7 +184,9 @@ export const storiesRoute = createRoute({
 export const audiobookRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/audiobook',
-  component: AudiobookPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const networkRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -257,7 +247,9 @@ export const supportRoute = createRoute({
 export const proRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/pro',
-  component: ProPage,
+  beforeLoad: () => {
+    throw redirect({ to: '/clone' });
+  },
 });
 export const updatesRoute = createRoute({
   getParentRoute: () => rootRoute,

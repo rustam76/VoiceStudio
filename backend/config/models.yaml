@@ -450,3 +450,18 @@ models:
     size_gb: 0.2
     note: "Apple Silicon only — via mlx-audio backend."
     platforms: [darwin-arm64]
+
+  - repo_id: "Supertone/supertonic-3"
+    label: "Supertonic-3 (Indonesian / English narration)"
+    role: TTS
+    engines: [supertonic3]
+    size_gb: 0.4
+    allow_patterns: ["onnx/*", "voice_styles/*", "config.json", "LICENSE", "README.md"]
+
+  - repo_id: "myshell-ai/OpenVoiceV2"
+    label: "OpenVoice V2 (voice cloning converter, MIT)"
+    role: TTS
+    engines: [supertonic3]
+    size_gb: 0.13
+    allow_patterns: ["converter/config.json", "converter/checkpoint.pth", "README.md", "LICENSE*"]
+    required_files: ["converter/config.json", "converter/checkpoint.pth"]

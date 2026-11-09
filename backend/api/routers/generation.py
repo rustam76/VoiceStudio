@@ -2241,7 +2241,8 @@ async def generate_speech(
     # built-in transformers pipeline, which cannot load whisper-large-v3-turbo
     # on transformers 5.3. On failure ref_text stays None and the model's
     # installed-only fallback can try without downloading another ASR model.
-    if ref_audio_path and not ref_text and not ref_picks_own_passage:
+    if (ref_audio_path and not ref_text and not ref_picks_own_passage
+            and getattr(backend_cls, "requires_reference_transcript", True)):
         from services.asr_backend import transcribe_reference
         # Same #730 hang risk as any whisperx transcribe — bound + reset the pool
         # so a wedged reference transcribe can't brick the backend. This path is

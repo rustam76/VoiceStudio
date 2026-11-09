@@ -1,8 +1,10 @@
 import { expect, it } from 'vitest';
-
 import { extraSettingsFor } from './settings-page';
 
-it('lists Settings → Account only when the build offers cloud accounts', () => {
-  expect(extraSettingsFor(false).some((item) => item.to === '/settings/account')).toBe(false);
-  expect(extraSettingsFor(true).some((item) => item.to === '/settings/account')).toBe(true);
+it('keeps API settings and excludes cloud and translation providers in the hosted studio', () => {
+  const paths: string[] = extraSettingsFor(true).map((item) => item.to);
+  expect(paths).toContain('/settings/openapi');
+  expect(paths).toContain('/settings/privacy');
+  expect(paths).not.toContain('/settings/account');
+  expect(paths).not.toContain('/settings/credentials');
 });

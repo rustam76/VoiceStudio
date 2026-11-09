@@ -8,6 +8,11 @@ Do not restore them. The browser UI belongs in `frontend/`; the hosted entry
 is `frontend/src/renderer/src/main.tsx`. Shared browser modules and
 legacy type declarations are not a native app. Backend hosting uses
 `backend/main.py`, `deploy/online/Dockerfile` and root `docker-compose.yml`.
+Hosted narration scope: Indonesian/English, profiles, voice cloning, Stories,
+history/download and REST API. Workflow, dubbing/video, ASR, translation, LLM,
+Cloud and MCP are excluded from the hosted runtime. Use the dedicated locked
+runtime in deploy/online/; do not restore the heavy root dependency set in Docker.
+Cloning must permit monetized YouTube: Supertonic-3 + OpenVoice V2, not NC weights.
 Older desktop/mobile documentation is historical, not a product requirement.
 CLAUDE.md contains the full operating rules.
 
