@@ -25,3 +25,8 @@ Savings come from excluding unrelated runtime dependency trees and loading the
 32.8M-parameter converter only on the first cloning request. Preset narration
 does not load it. Runtime uses a dedicated frozen lockfile; dev tests are separate.
 Preserve the existing studio-data volume, auth/CSRF boundaries and version.
+
+The sidebar reads only narration engine status. It does not poll diarisation,
+dictation, translation, batch jobs or performance-profile selection. Legacy
+diarisation status requests return an explicit disabled response in hosted mode;
+a missing catalogue entry is treated as unavailable rather than raising.

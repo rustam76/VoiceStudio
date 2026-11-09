@@ -192,6 +192,11 @@ def list_effects_presets():
 @router.get("/engines/diarisation")
 def diarisation_status():
     """Describe the selected local diarisation runtime without loading weights."""
+    from core.studio_scope import enabled as studio_lite
+    if studio_lite():
+        return {"active": "off", "label": "Diarisation", "model": None,
+                "installed": False, "loaded": False, "busy": False,
+                "reason": "Diarisation is not included in this narration studio", "options": []}
     from services.diarization_runtime import (
         PYANNOTE,
         SORTFORMER,
@@ -204,8 +209,8 @@ def diarisation_status():
     options = []
     from api.routers.setup.models import KNOWN_MODELS, cache_is_complete, is_cached
     pyannote_repo = "pyannote/speaker-diarization-3.1"
-    spec = next(model for model in KNOWN_MODELS if model["repo_id"] == pyannote_repo)
-    pyannote_installed = is_cached(pyannote_repo) and cache_is_complete(spec)
+    spec = next((model for model in KNOWN_MODELS if model["repo_id"] == pyannote_repo), None)
+    pyannote_installed = spec is not None and is_cached(pyannote_repo) and cache_is_complete(spec)
     pyannote_reason = None if pyannote_installed else "Install the pyannote model bundle"
     options.append({
         "id": PYANNOTE,

@@ -131,8 +131,8 @@ def installed_backends() -> set[str]:
     from api.routers.setup.models import KNOWN_MODELS, cache_is_complete, is_cached
 
     repo_id = "pyannote/speaker-diarization-3.1"
-    spec = next(model for model in KNOWN_MODELS if model["repo_id"] == repo_id)
-    if is_cached(repo_id) and cache_is_complete(spec):
+    spec = next((model for model in KNOWN_MODELS if model["repo_id"] == repo_id), None)
+    if spec is not None and is_cached(repo_id) and cache_is_complete(spec):
         installed.add(PYANNOTE)
 
     try:

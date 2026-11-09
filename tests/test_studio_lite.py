@@ -9,6 +9,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
 
 class StudioLiteTests(unittest.TestCase):
+    def test_diarisation_status_is_disabled_with_a_pruned_catalogue(self):
+        from fastapi import FastAPI
+        from fastapi.testclient import TestClient
+        from api.routers.engines import router
+        app = FastAPI()
+        app.include_router(router)
+        with patch.dict(os.environ, {"OMNIVOICE_STUDIO_LITE": "1"}), \
+             patch("api.routers.setup.models.KNOWN_MODELS", []):
+            response = TestClient(app).get("/engines/diarisation")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["active"], "off")
+        self.assertFalse(response.json()["installed"])
+        self.assertEqual(response.json()["options"], [])
+
+    def test_diarisation_inventory_tolerates_an_absent_pyannote_entry(self):
+        from services.diarization_runtime import installed_backends
+        with patch("api.routers.setup.models.KNOWN_MODELS", []), \
+             patch("api.routers.setup.models.is_cached") as cached, \
+             patch("services.diarization_runtime.sortformer_status", return_value={"installed": False}):
+            self.assertEqual(installed_backends(), set())
+        cached.assert_not_called()
+
     def test_no_implicit_model_download(self):
         from engines.openvoice_v2.converter import Converter
         calls = []
