@@ -136,7 +136,7 @@ def test_a_license_gate_keeps_the_words_the_accept_button_needs(diagnostic, one_
     # detail split (engines/engineDisplay.js, used by the row and the panel).
     source = (
         Path(__file__).resolve().parents[1]
-        / "electron/src/shared/components/engines/engineDisplay.js"
+        / "frontend/src/shared/components/engines/engineDisplay.js"
     ).read_text(encoding="utf-8")
     m = re.search(r"function reasonMentionsLicense\(reason\)[^}]*?return /([^/]+)/(\w*)\.test", source, re.S)
     assert m, "engineDisplay.reasonMentionsLicense changed shape"
@@ -248,7 +248,7 @@ def test_renderer_asr_guidance_matrix_matches_real_owned_backend_payloads():
         node.value for node in tree.body
         if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", None) == "_INSTALL_HINTS"
     ))
-    fixture = root / "electron/src/renderer/src/features/settings/model-list/fixtures/asr-unavailable.json"
+    fixture = root / "frontend/src/renderer/src/features/settings/model-list/fixtures/asr-unavailable.json"
     for case in json.loads(fixture.read_text(encoding="utf-8")):
         expected = case["engine"]
         actual = public_backends([{**expected, "reason": case["diagnostic"]}])[0]

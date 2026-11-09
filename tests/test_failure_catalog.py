@@ -3,7 +3,7 @@
 The backend names a failure with a stable class (``core.failure._HINTS`` plus
 the dynamic HF_MIRROR_UNREACHABLE) and sends English text. The Electron app
 shows a localized message and an in-app action for each class from ONE table,
-``electron/src/shared/utils/failureCatalog.ts``. A class added to the backend
+``frontend/src/shared/utils/failureCatalog.ts``. A class added to the backend
 without an entry there reached users as the backend's English sentence with no
 fix button — the owner's Portuguese Clone page showed exactly that for
 REFERENCE_STT_MISSING. These tests fail on that drift.
@@ -16,8 +16,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG = ROOT / "electron/src/shared/utils/failureCatalog.ts"
-LOCALES = ROOT / "electron/src/renderer/src/i18n/locales"
+CATALOG = ROOT / "frontend/src/shared/utils/failureCatalog.ts"
+LOCALES = ROOT / "frontend/src/renderer/src/i18n/locales"
 SOURCE = CATALOG.read_text(encoding="utf-8")
 
 _BODY = SOURCE.split("export const FAILURE_CATALOG = {", 1)[1].split("} as const", 1)[0]

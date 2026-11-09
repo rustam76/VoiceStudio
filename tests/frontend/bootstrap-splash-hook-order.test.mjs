@@ -29,7 +29,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const src = readFileSync(
-  fileURLToPath(new URL('../../electron/src/shared/components/BootstrapSplash.jsx', import.meta.url)),
+  fileURLToPath(new URL('../../frontend/src/shared/components/BootstrapSplash.jsx', import.meta.url)),
   'utf8',
 );
 

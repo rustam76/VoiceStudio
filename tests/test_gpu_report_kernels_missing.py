@@ -30,7 +30,7 @@ import pytest
 
 LOCALES_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "electron", "src", "renderer", "src", "i18n", "locales",
+    "frontend", "src", "renderer", "src", "i18n", "locales",
 )
 _PLACEHOLDER = re.compile(r"\{\{\s*(\w+)\s*\}\}")
 

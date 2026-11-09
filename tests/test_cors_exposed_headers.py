@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CLIENT_ROOTS = (ROOT / "electron/src/renderer", ROOT / "electron/src/shared")
+CLIENT_ROOTS = (ROOT / "frontend/src/renderer", ROOT / "frontend/src/shared")
 
 # Readable cross-origin without being exposed (Fetch "CORS-safelisted").
 SAFELISTED = {

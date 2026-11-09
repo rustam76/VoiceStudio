@@ -80,7 +80,7 @@ def test_active_templates_use_the_canonical_public_path():
         "deploy/docker-compose.yml",
         "docs/integration-directory.md",
         "docs/install/linux.md",
-        "electron/src/renderer/src/features/integrations/setup-registry.ts",
+        "frontend/src/renderer/src/features/integrations/setup-registry.ts",
     ):
         text = open(os.path.join(ROOT, rel), encoding="utf-8").read()
         assert canonical in text, f"{rel} does not use the canonical GHCR path"

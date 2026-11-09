@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildPastePlan, detectPasteMode } from '../../electron/src/shared/utils/pasteTranslations.js';
+import { buildPastePlan, detectPasteMode } from '../../frontend/src/shared/utils/pasteTranslations.js';
 
 for (const separator of [',', '.']) {
   test(`long-hour subtitle paste routes to timestamp matching (${separator})`, () => {

@@ -1,6 +1,6 @@
 # Security scanning — runs on PRs, on push to main, and weekly. The secret scan
 # runs on every PR; CodeQL, bandit and the dependency audits are skipped for PRs
-# that only touch docs/, mobile/ or Markdown (see the `changes` job).
+# that only touch docs/ or Markdown (see the `changes` job).
 #
 # Complements the CodeRabbit + Greptile app reviews (which fire on PR creation)
 # with deterministic checks:
@@ -44,7 +44,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  # A pull request whose every changed file is documentation or mobile-only source
+  # A pull request whose every changed file is documentation-only source
   # cannot change what CodeQL (Python, JS/TS), bandit or the dependency audits
   # analyse, so those four jobs are skipped for it. The secret scan always runs,
   # and every push to main, the weekly schedule and manual runs scan everything.
@@ -83,7 +83,7 @@ jobs:
               printf '%s\n' "$rows" | cut -f1 | sort -u | grep -v -x -E 'added|modified' > /dev/null || status_rc=$?
               if [ "$total" -lt 3000 ] && [ "$status_rc" -eq 1 ]; then
                 rc=0
-                outside=$(printf '%s\n' "$rows" | cut -f2 | grep -v -P '^(docs/|mobile/|\.github/ISSUE_TEMPLATE/|\.github/[^/]+\.md$|[^/]+\.md$)') || rc=$?
+                outside=$(printf '%s\n' "$rows" | cut -f2 | grep -v -P '^(docs/|\.github/ISSUE_TEMPLATE/|\.github/[^/]+\.md$|[^/]+\.md$)') || rc=$?
                 [ "$rc" -eq 1 ] && code=false
               fi
             fi

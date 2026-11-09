@@ -35,7 +35,7 @@ def test_current_version_is_in_lockstep_everywhere() -> None:
 
 
 def test_visible_brand_surfaces_say_voicestudio() -> None:
-    visible_files = ("electron/build/Info.plist", "electron/src/renderer/index.html")
+    visible_files = ("electron/build/Info.plist", "frontend/src/renderer/index.html")
     product_name = json.loads((ROOT / "config/app.json").read_text(encoding="utf-8"))["productName"]
     assert product_name == "VoiceStudio"
     for path in visible_files:
@@ -51,9 +51,9 @@ def test_visible_brand_surfaces_say_voicestudio() -> None:
 
 
 def test_brand_mark_is_shared_and_fills_the_icon() -> None:
-    mark = (ROOT / "electron/src/shared/components/brand/VoiceStudioMark.jsx").read_text(encoding="utf-8")
-    header = (ROOT / "electron/src/shared/components/Header.jsx").read_text(encoding="utf-8")
-    about = (ROOT / "electron/src/shared/components/settings/AboutTab.jsx").read_text(encoding="utf-8")
+    mark = (ROOT / "frontend/src/shared/components/brand/VoiceStudioMark.jsx").read_text(encoding="utf-8")
+    header = (ROOT / "frontend/src/shared/components/Header.jsx").read_text(encoding="utf-8")
+    about = (ROOT / "frontend/src/shared/components/settings/AboutTab.jsx").read_text(encoding="utf-8")
     logo = (ROOT / "docs/logo.svg").read_text(encoding="utf-8")
     favicon = (ROOT / "electron/public/favicon.svg").read_text(encoding="utf-8")
 
@@ -163,7 +163,7 @@ def test_active_source_launch_is_electron_and_web_ports_clean_quietly() -> None:
 
 
 def test_icon_rail_has_no_static_section_captions_and_keeps_air_between_items() -> None:
-    rail = (ROOT / "electron/src/shared/components/NavRail.jsx").read_text(encoding="utf-8")
+    rail = (ROOT / "frontend/src/shared/components/NavRail.jsx").read_text(encoding="utf-8")
     for stale_caption in ("Start", "Create", "Workflows", "Reference"):
         assert stale_caption not in rail
     assert "pt-[18px]" in rail

@@ -1,1 +1,0 @@
-VoiceStudio 0.5.7: signed Android release. Release notes: https://github.com/debpalash/VoiceStudio/releases/tag/v0.5.7

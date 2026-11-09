@@ -1,17 +1,6 @@
-"""Review-bot configs must describe the repository that exists today.
+"""Review-bot instructions must target the current hosted browser workspace.
 
-CodeRabbit (``.coderabbit.yaml``) and Greptile (``greptile.json``) review every
-PR with instructions that name repo paths. When the Tauri shell and the
-``frontend/`` UI were removed, those instructions kept pointing reviewers at
-``frontend/src/i18n/locales`` and ``frontend/src-tauri`` mirrors, so the bots
-enforced rules against files that no longer exist. This test fails when either
-config references a missing repo path, a path-scoped review rule matches no
-tracked file, or the removed ``frontend/`` / ``src-tauri`` trees reappear.
-
-Extraction is deliberately conservative: only tokens that start with a
-top-level tracked directory (``backend/...``) or bare file names with a config
-extension (``CLAUDE.md``) are checked; glob tokens are checked up to their
-first wildcard.
+Reject retired native paths, missing source references and empty review globs.
 """
 
 from __future__ import annotations
@@ -27,17 +16,17 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 CONFIGS = (".coderabbit.yaml", "greptile.json")
 _GLOB_CHARS = "*?{["
-_BANNED = ("src-tauri", "frontend/")
+_BANNED = ("src-tauri", "electron/", "native/desktop-bridge")
 
 
 def _tracked() -> list[str]:
     try:
         out = subprocess.run(
-            ["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT, capture_output=True, text=True, check=True
         ).stdout
     except (OSError, subprocess.CalledProcessError):
         pytest.skip("git ls-files unavailable")
-    return [line for line in out.splitlines() if line]
+    return [line for line in out.splitlines() if line and (ROOT / line).exists()]
 
 
 def _glob_regex(pattern: str) -> re.Pattern[str]:
@@ -107,8 +96,8 @@ def _config_text() -> dict[str, str]:
 def test_bot_configs_do_not_mention_removed_ui_trees():
     hits = [f"{name}: {banned}" for name, text in _config_text().items() for banned in _BANNED if banned in text]
     assert not hits, (
-        f"Bot configs mention removed paths {hits}; Electron (electron/) is the only UI "
-        "and the Tauri shell is gone — point the rule at the live path."
+        f"Bot configs mention removed paths {hits}; frontend/ is the browser UI "
+        "and native runtimes are gone — point the rule at the live path."
     )
 
 
@@ -152,7 +141,7 @@ def test_extractor_flags_stale_paths():
     )
     assert tokens == ["frontend/src/i18n/locales/*.json", "backend/core/version.py", "NOPE.md"]
     assert not _prefix_exists("frontend/src-tauri/Cargo.toml")
-    assert _prefix_exists("electron/src/{shared,renderer}/**/*.tsx")
-    assert _glob_regex("electron/src/{shared,renderer}/**/*.{js,tsx}").match(
-        "electron/src/shared/components/Foo.tsx"
+    assert _prefix_exists("frontend/src/{shared,renderer}/**/*.tsx")
+    assert _glob_regex("frontend/src/{shared,renderer}/**/*.{js,tsx}").match(
+        "frontend/src/shared/components/Foo.tsx"
     )

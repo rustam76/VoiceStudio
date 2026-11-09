@@ -138,7 +138,7 @@ def test_renderer_code_catalog_matches_backend_vocabulary():
     import json
     from pathlib import Path
     from omnivoice.utils.lang_map import LANG_NAME_TO_ID
-    path = Path(__file__).resolve().parents[1] / 'electron/src/shared/language-codes.json'
+    path = Path(__file__).resolve().parents[1] / 'frontend/src/shared/language-codes.json'
     assert json.loads(path.read_text(encoding='utf-8')) == LANG_NAME_TO_ID
 
 
@@ -146,7 +146,7 @@ def test_flag_search_regions_match_the_rendered_flags():
     import json
     import re
     from pathlib import Path
-    root = Path(__file__).resolve().parents[1] / 'electron/src/shared'
+    root = Path(__file__).resolve().parents[1] / 'frontend/src/shared'
     source = (root / 'components/LanguageFlag.jsx').read_text(encoding='utf-8')
     body = source.split('export const LANGUAGE_FLAGS = {')[1].split('};')[0]
     expected = {key.strip("'\""): region.replace('_', '-')

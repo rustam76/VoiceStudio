@@ -39,12 +39,8 @@ def test_python_rejects_invalid_electron_proxy_ports() -> None:
 
 def test_active_launchers_do_not_mirror_default_port_literals() -> None:
     active_files = (
-        "electron/electron.vite.config.ts",
-        "electron/vite.web.config.ts",
-        "electron/src/main/backend.ts",
-        "electron/src/main/dev-backend-proxy.ts",
-        "electron/src/shared/utils/apiBase.ts",
-        "scripts/dev-backend.mjs",
+        "frontend/vite.web.config.ts",
+        "frontend/src/shared/utils/apiBase.ts",
         "scripts/clear-dev-ports.mjs",
     )
     for relative in active_files:

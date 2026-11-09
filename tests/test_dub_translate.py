@@ -1000,7 +1000,7 @@ def _picker_codes() -> set[str]:
     import re
     from pathlib import Path
 
-    src = (Path(__file__).resolve().parents[1] / "electron/src/shared/utils/languages.js").read_text(encoding="utf-8")
+    src = (Path(__file__).resolve().parents[1] / "frontend/src/shared/utils/languages.js").read_text(encoding="utf-8")
     codes = set(re.findall(r"\{ code: '([^']+)'", src))
     assert len(codes) > 80
     return codes

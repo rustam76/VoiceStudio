@@ -38,11 +38,11 @@ AGPL-3.0 text in [`LICENSE`](LICENSE).)
 
 ### Scope
 
-These terms cover the VoiceStudio application — the Electron desktop and web
-app (`electron/`), its native desktop helper (`native/`), the FastAPI backend
+These terms cover the VoiceStudio application — the browser web
+app (`frontend/`), the FastAPI backend
 (`backend/`), and supporting build / packaging files (`scripts/`, `deploy/`,
-`.github/`). Electron components adapted from T3 Code keep their MIT notice in
-`electron/T3CODE-LICENSE.txt`.
+`.github/`). Browser components adapted from T3 Code keep their MIT notice in
+`frontend/T3CODE-LICENSE.txt`.
 
 The bundled `omnivoice/` Python package — the underlying TTS model by Han Zhu —
 is **separately licensed under Apache License 2.0** by its upstream authors and
@@ -79,8 +79,9 @@ rights granted by the application's AGPL licence. Existing engine settings and
 ordinary download/first-use paths remain separate and unchanged; no production
 model currently has the complete evidence needed for this reviewed workflow.
 
-Third-party dependencies retain their own licenses. See `bun.lock`, `uv.lock`,
-and `native/desktop-bridge/Cargo.lock` for the resolved set.
+Third-party dependencies retain their own licenses. See `bun.lock` and `uv.lock`
+for the resolved set. Notices from retired native apps are preserved in
+`docs/licenses/retired-native/`.
 
 The locked PyAV 15.1.0 wheels bundle FFmpeg and x264/x265 libraries. PyAV's source
 licence alone does not describe those binaries' terms. The

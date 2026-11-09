@@ -56,7 +56,7 @@ def test_mobile_builds_on_pull_requests_only_for_mobile_changes():
     triggers = workflow.get("on", workflow.get(True))
     pr_paths = triggers["pull_request"]["paths"]
     assert "mobile/**" in pr_paths
-    assert not [p for p in pr_paths if "locales" in p or p in ("package.json", "electron/src/shared/languages.json")]
+    assert not [p for p in pr_paths if "locales" in p or p in ("package.json", "frontend/src/shared/languages.json")]
     assert any("locales" in p for p in triggers["push"]["paths"])
 
 

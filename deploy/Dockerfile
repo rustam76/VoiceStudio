@@ -19,17 +19,15 @@ WORKDIR /app
 # Monorepo — bun workspace with lockfile at repo root. Copy manifests first
 # so `bun install` caches independently of source edits.
 COPY package.json bun.lock ./
-COPY electron/package.json ./electron/
-COPY patches/ ./patches/
+COPY frontend/package.json ./frontend/
 COPY config/ ./config/
 
 RUN bun install --frozen-lockfile
 
-# Build the maintained Electron renderer as the browser UI. `electron/src/shared`
+# Build the maintained Electron renderer as the browser UI. `frontend/src/shared`
 # contains transitional shared modules only; it has no app entry point.
 COPY frontend/ ./frontend/
-COPY electron/ ./electron/
-RUN bun run --cwd electron build:web
+RUN bun run --cwd frontend build:web
 
 # ==========================================
 # arm64 NVIDIA base (#2831): built only when BASE_IMAGE=cuda-arm64-base

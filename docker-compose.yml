@@ -1,0 +1,41 @@
+name: voicestudio-online
+services:
+  studio:
+    image: voicestudio-online:local
+    build:
+      context: .
+      dockerfile: deploy/online/Dockerfile
+    ports:
+      - "127.0.0.1:3900:3900"
+    environment:
+      OMNIVOICE_API_KEY: ${OMNIVOICE_API_KEY:?Set a long random key in .env}
+      VOICESTUDIO_PUBLIC_URL: ${VOICESTUDIO_PUBLIC_URL:-http://localhost:3900}
+      OMNIVOICE_ALLOWED_HOSTS: ${OMNIVOICE_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      OMNIVOICE_ALLOWED_ORIGINS: ${OMNIVOICE_ALLOWED_ORIGINS:-http://localhost:3900}
+      OMNIVOICE_MCP_ALLOWED_HOSTS: ${OMNIVOICE_MCP_ALLOWED_HOSTS:-localhost:3900,127.0.0.1:3900}
+      OMNIVOICE_SERVER_MODE: "1"
+      OMNIVOICE_TTS_BACKEND: supertonic3
+      OMNIVOICE_PRELOAD_CAPTURE_ASR: "0"
+      OMNIVOICE_PRELOAD_WATERMARK: "0"
+      OMNIVOICE_MCP_OUTPUT_MODE: files
+      SUPERTONIC_INTRA_OP_THREADS: ${SUPERTONIC_INTRA_OP_THREADS:-2}
+      SUPERTONIC_INTER_OP_THREADS: "1"
+      OMP_NUM_THREADS: ${SUPERTONIC_INTRA_OP_THREADS:-2}
+    volumes:
+      - studio-data:/data
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 45s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    pids_limit: 256
+    mem_limit: ${VOICESTUDIO_MEMORY_LIMIT:-4g}
+    cpus: ${VOICESTUDIO_CPUS:-2}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  studio-data:

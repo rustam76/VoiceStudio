@@ -13,7 +13,7 @@ import re
 from pathlib import Path
 
 CATALOG = (
-    Path(__file__).resolve().parents[1] / "electron/src/renderer/src/i18n/locales/en.json"
+    Path(__file__).resolve().parents[1] / "frontend/src/renderer/src/i18n/locales/en.json"
 )
 
 _SHOUTED = re.compile(r"[A-Z][A-Z &/'.-]{3,}")

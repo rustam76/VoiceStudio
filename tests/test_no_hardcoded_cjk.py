@@ -1,7 +1,7 @@
 """Keep CJK user-facing text in translation catalogs.
 
 UI copy must use i18n ``t('...')`` keys backed by locale JSON. Native language
-names belong in ``electron/src/shared/i18n/index.ts``. Functional CJK may be
+names belong in ``frontend/src/shared/i18n/index.ts``. Functional CJK may be
 allowlisted below, with a justification for every file.
 """
 from __future__ import annotations
@@ -34,14 +34,13 @@ _SKIP_DIRECTORIES = {
     "target", ".specify", ".claude", ".pytest_cache",
 }
 _ALLOWED_PREFIXES = (
-    "electron/src/shared/i18n/",
-    "electron/src/renderer/src/i18n/",
+    "frontend/src/shared/i18n/",
+    "frontend/src/renderer/src/i18n/",
     "docs/specs/",
     "docs/readme/",  # translated READMEs and their native language-switcher links
 )
 _ALLOWED_FILES = {
-    "mobile/contract/tts/zipvoice-lexicon.txt",  # Pinned multilingual pronunciation data, not UI copy.
-    "electron/src/main/blank-window-guard.ts",  # Matches localized window text.
+    "README.upstream.md",  # Archived upstream language-switcher links.
     "README.md",  # Presents translated project copy.
     "docs/data_preparation.md",  # Includes multilingual data examples.
     "docs/voice-design.md",  # Documents multilingual voice prompts.
@@ -53,20 +52,20 @@ _ALLOWED_FILES = {
     "backend/services/subtitle_segmenter.py",  # CJK subtitle segmentation.
     "backend/services/text_normalization.py",  # CJK normalization patterns.
     "backend/core/http_headers.py",  # Parses localized HTTP filenames.
-    "electron/src/shared/components/DubSegmentRow.jsx",  # Functional language-name data.
-    "electron/src/shared/components/StoriesEditor.jsx",  # Functional multilingual samples.
-    "electron/src/shared/utils/voiceInstruct.js",  # CJK instruction vocabulary.
+    "frontend/src/shared/components/DubSegmentRow.jsx",  # Functional language-name data.
+    "frontend/src/shared/components/StoriesEditor.jsx",  # Functional multilingual samples.
+    "frontend/src/shared/utils/voiceInstruct.js",  # CJK instruction vocabulary.
     "omnivoice/utils/text.py",  # Core multilingual text processing.
     "backend/services/tts_backend.py",  # Engine speaker vocabulary.
     "backend/core/personalities.py",  # Model prompt vocabulary.
     "backend/core/archetypes.py",  # Voice archetype vocabulary.
     "backend/core/describe_voice.py",  # Voice-description vocabulary.
-    "electron/src/shared/utils/constants.js",  # Engine language constants.
+    "frontend/src/shared/utils/constants.js",  # Engine language constants.
     "omnivoice/models/omnivoice.py",  # Model language tokens.
     "omnivoice/utils/duration.py",  # CJK duration rules.
     "omnivoice/utils/voice_design.py",  # Voice-design model vocabulary.
     "backend/migrations/versions/0007_rebuild_poisoned_design_instruct.py",  # Migrates model prompts.
-    "electron/src/shared/utils/errorDocsMap.ts",  # Recognizes localized errors.
+    "frontend/src/shared/utils/errorDocsMap.ts",  # Recognizes localized errors.
     "omnivoice/eval/wer/fleurs.py",  # Multilingual evaluation data.
     "omnivoice/eval/wer/punctuations.lst",  # Evaluation punctuation corpus.
     "omnivoice/cli/demo.py",  # Multilingual demo content.
@@ -95,7 +94,7 @@ def _is_allowed(rel: str) -> bool:
 def _tracked_files() -> list[str]:
     try:
         result = subprocess.run(
-            ["git", "ls-files", "-z"], cwd=_ROOT, capture_output=True,
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=_ROOT, capture_output=True,
             check=True, timeout=30,
         )
         files = [item.decode() for item in result.stdout.split(b"\0") if item]
@@ -144,7 +143,7 @@ def test_no_hardcoded_cjk_outside_locales():
 @pytest.mark.parametrize(
     "path",
     [
-        "electron/src/shared/i18n/locales/zh-CN.json",
+        "frontend/src/shared/i18n/locales/zh-CN.json",
         "widget.test.ts",
         "test_widget.py",
         "widget_test.py",

@@ -626,17 +626,17 @@ def test_convert_picker_offers_exactly_the_pinnable_languages():
     from api.routers.voice_convert import _whisper_language
 
     root = Path(__file__).resolve().parents[1]
-    picker = json.loads((root / "electron/src/shared/languages.json").read_text("utf-8"))
+    picker = json.loads((root / "frontend/src/shared/languages.json").read_text("utf-8"))
     pinnable = {name for name in picker if _whisper_language(name)}
     source = (
-        root / "electron/src/renderer/src/features/tools/convert-languages.ts"
+        root / "frontend/src/renderer/src/features/tools/convert-languages.ts"
     ).read_text("utf-8")
     offered = set(re.findall(r"^  '([^']+)',$", source, re.M))
     assert offered == pinnable
 
     # LanguagePicker also enables any name sharing an ISO code with an offered
     # one; each of those must pin too.
-    codes = json.loads((root / "electron/src/shared/language-codes.json").read_text("utf-8"))
+    codes = json.loads((root / "frontend/src/shared/language-codes.json").read_text("utf-8"))
     offered_codes = {codes.get(name.lower()) for name in offered} - {None}
     leaked = [n for n in picker if codes.get(n.lower()) in offered_codes and n not in pinnable]
     assert not leaked

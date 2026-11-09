@@ -1,8 +1,8 @@
 """Locale key parity — every i18n file stay in lockstep with en.json.
 
-Two catalogs exist. ``electron/src/renderer/src/i18n/locales`` is the one the
+Two catalogs exist. ``frontend/src/renderer/src/i18n/locales`` is the one the
 app loads at runtime; it must have full key parity (see the ``renderer``
-tests at the end). ``electron/src/shared/i18n/locales`` is loaded only by the
+tests at the end). ``frontend/src/shared/i18n/locales`` is loaded only by the
 transitional shared modules' tests and is ratcheted below. Both must parse,
 carry no keys en.json doesn't have, and preserve en's ``{{placeholder}}``
 tokens. Real bug classes this pins down:
@@ -30,7 +30,7 @@ import pytest
 
 _LOCALES_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "electron", "src", "shared", "i18n", "locales",
+    "frontend", "src", "shared", "i18n", "locales",
 )
 _EN = "en"
 
@@ -467,7 +467,7 @@ def test_dub_plan_actions_and_explanations_are_translated(locale):
 def test_locale_objects_have_no_duplicate_keys():
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
-    for directory in (root / "electron/src/shared/i18n/locales", root / "electron/src/renderer/src/i18n/locales"):
+    for directory in (root / "frontend/src/shared/i18n/locales", root / "frontend/src/renderer/src/i18n/locales"):
         for path in directory.glob("*.json"):
             def unique_object(pairs):
                 result = {}
@@ -478,13 +478,13 @@ def test_locale_objects_have_no_duplicate_keys():
             json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_object)
 
 
-# ── Runtime catalog (electron/src/renderer/src/i18n/locales) ─────────────
+# ── Runtime catalog (frontend/src/renderer/src/i18n/locales) ─────────────
 # The catalog the app actually loads gets the same integrity checks, and full
 # parity rather than a ratchet: missing keys and orphans (zh-CN once carried
 # four player.* keys English never defined) both fail.
 _RENDERER_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "electron", "src", "renderer", "src", "i18n", "locales",
+    "frontend", "src", "renderer", "src", "i18n", "locales",
 )
 _RENDERER_LOCALES = sorted(f[:-5] for f in os.listdir(_RENDERER_DIR) if f.endswith(".json"))
 _CLDR_PLURAL = re.compile(r"^(.*)_(?:zero|one|two|few|many|other)$")

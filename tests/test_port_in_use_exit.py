@@ -37,14 +37,14 @@ def test_backend_declares_the_exit_code():
 
 def test_electron_shell_agrees_on_the_exit_code():
     """The desktop supervisor must distinguish a conflict from a crash."""
-    src = _read("electron", "src", "main", "backend.ts")
+    src = _read("frontend", "src", "main", "backend.ts")
     match = re.search(r"const EXIT_PORT_IN_USE = (\d+);", src)
     assert match, "EXIT_PORT_IN_USE missing from Electron backend supervisor"
     assert int(match.group(1)) == _EXPECTED_EXIT
 
 
 def test_frontend_crash_hint_agrees_on_the_exit_code():
-    src = _read("electron", "src", "shared", "utils", "backendCrash.ts")
+    src = _read("frontend", "src", "shared", "utils", "backendCrash.ts")
     assert f"marker.exit_code === {_EXPECTED_EXIT}" in src
 
 

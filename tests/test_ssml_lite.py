@@ -138,7 +138,7 @@ def test_spell_out_strips_and_joins_whitespace():
 def test_spell_out_keeps_combining_marks_with_their_base():
     # NFD input (e + combining acute) must spell as "c a f é", with the
     # combining mark kept on the base character rather than spoken alone.
-    # Mirrors the JS-side fix in 55f3d58 (electron/src/shared/ssmlLite).
+    # Mirrors the JS-side fix in 55f3d58 (frontend/src/shared/ssmlLite).
     import unicodedata
 
     nfd = unicodedata.normalize("NFD", "café")

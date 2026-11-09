@@ -77,7 +77,7 @@ def test_python_docs_and_mobile_edits_skip_the_electron_jobs(tmp_path, files):
 
 
 @pytest.mark.parametrize("files", [
-    ["electron/src/renderer/src/app.tsx"],
+    ["frontend/src/renderer/src/app.tsx"],
     ["backend/x.py", "electron/src/main/updater.ts"],            # one Electron file is enough
     ["native/desktop-bridge/src/lib.rs"],
     ["package.json"], ["bun.lock"], ["config/app.json"], ["config/account.json"],
@@ -134,7 +134,7 @@ def test_a_deletion_or_rename_is_found_however_large_the_list_and_wherever_it_si
 
 def test_a_huge_electron_pr_does_not_crash_the_detection_step(tmp_path):
     """`printf | head -5` exited 141 here and the step failed before writing its output."""
-    rows = [("modified", f"electron/src/renderer/file{i:04}.tsx") for i in range(2500)]
+    rows = [("modified", f"frontend/src/renderer/file{i:04}.tsx") for i in range(2500)]
     result, stdout = _detect(tmp_path, rows)    # _detect asserts the step itself exited 0
     assert result == "electron=true"
     assert stdout.count("    electron/") == 5

@@ -81,8 +81,8 @@ reviews:
         path; flag direct schema edits. The backend serves loopback HTTP: treat
         every query/path/form param as hostile (path traversal, log injection,
         CSRF from a browser tab), and never route user-chosen filesystem
-        destinations through HTTP — that authorization belongs in Electron main.
-    - path: "electron/src/{shared,renderer}/**/*.{js,jsx,ts,tsx}"
+        destinations through HTTP — validate permitted destinations on the server.
+    - path: "frontend/src/{shared,renderer}/**/*.{js,jsx,ts,tsx}"
       instructions: >-
         Review as a product-minded senior frontend engineer. Check: stale state
         and races (async results landing after unmount or after newer requests);
@@ -90,22 +90,15 @@ reviews:
         message; loading/disabled states during long operations. Every new
         user-facing string must be an i18n t('...') key present in ALL 21
         locale files of the catalog the code imports from —
-        electron/src/shared/i18n/locales/*.json (tests/test_locale_parity.py)
-        or electron/src/renderer/src/i18n/locales/*.json (electron
+        frontend/src/shared/i18n/locales/*.json (tests/test_locale_parity.py)
+        or frontend/src/renderer/src/i18n/locales/*.json (frontend
         locale:check) — flag hardcoded UI strings and keys missing from any
         locale.
-    - path: "electron/**/*.{ts,tsx}"
+    - path: "frontend/**/*.{ts,tsx}"
       instructions: >-
-        Electron is the only maintained desktop; Tauri is sunset and archived.
-        Review main/preload IPC authorization, sender validation, narrow bridges,
-        native file dialogs, runtime supervision and renderer lifecycle. Never
-        require a Tauri UI backport. User-facing strings belong in all 21 files
-        of the matching locale catalog. Validate user-visible behavior on macOS, Windows and Linux.
-    - path: "native/**/*.rs"
-      instructions: >-
-        Review the Electron native helper (native/desktop-bridge) for input
-        validation, process and filesystem scope, thread affinity and
-        cross-platform behavior. Never require work on the removed Tauri shell.
+        Review browser behavior, same-origin requests, CSRF handling and loading
+        states. This fork is web-only; do not require native runtime or installer
+        changes. User-facing strings belong in all matching locale files.
     - path: "tests/**/*.py"
       instructions: >-
         Review as a test-infrastructure engineer. Check: the test would fail
@@ -164,8 +157,8 @@ reviews:
         instructions: >-
           For every new or changed t('...') key in Electron UI code, verify the
           key exists in all 21 files of the catalog it uses:
-          electron/src/shared/i18n/locales/ or
-          electron/src/renderer/src/i18n/locales/. List any locale files
+          frontend/src/shared/i18n/locales/ or
+          frontend/src/renderer/src/i18n/locales/. List any locale files
           missing the key. Also flag hardcoded user-facing strings
           that bypass i18n entirely.
       - name: "Local-first guarantee"

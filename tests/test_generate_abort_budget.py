@@ -1,6 +1,6 @@
 """The UI's /generate backstop must outlast the backend's own budget.
 
-electron/src/shared/utils/generateBudget.ts mirrors the backend's default
+frontend/src/shared/utils/generateBudget.ts mirrors the backend's default
 budgets. If the backend grows one (a longer queue wait, a bigger sidecar
 receive timeout) without the client following, the UI reports a failure while
 the job is still running — the 21-minute backstop did exactly that against a
@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BUDGET_TS = ROOT / "electron/src/shared/utils/generateBudget.ts"
+BUDGET_TS = ROOT / "frontend/src/shared/utils/generateBudget.ts"
 
 
 def _client_budget() -> dict[str, float]:

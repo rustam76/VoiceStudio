@@ -26,8 +26,7 @@ class VirusTotalTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        # The script resolves its input; macOS reports /var temp dirs as /private/var.
-        self.path = Path(self.temporary.name).resolve() / 'public "sample".zip'
+        self.path = Path(self.temporary.name) / 'public "sample".zip'
         self.path.write_bytes(b"public sample bytes\x00\xff")
         self.client = vt.Client("private-test-key")
         self.client.opener = Mock()
@@ -214,7 +213,7 @@ class VirusTotalTests(unittest.TestCase):
                 patch.object(vt, "Client", return_value=client), patch.object(vt, "source_archive") as archive, \
                 contextlib.redirect_stdout(io.StringIO()) as output:
             self.assertEqual(vt.main(["--no-wait"]), 0)
-        client.upload.assert_called_once_with(self.path)
+        client.upload.assert_called_once_with(self.path.resolve())
         client.wait.assert_not_called()
         archive.assert_not_called()
         self.assertIn("https://www.virustotal.com/gui/file/", output.getvalue())
@@ -247,13 +246,13 @@ class VirusTotalTests(unittest.TestCase):
         self.assertIn("Upload path must be an existing file", result.stderr)
         self.assertNotIn("private-test-key", result.stdout + result.stderr)
 
-    def test_plain_make_keeps_the_existing_release_default(self):
+    def test_plain_make_starts_web_development(self):
         import shutil
 
         if not shutil.which("make"):
             self.skipTest("Make is unavailable")
         result = subprocess.run(["make", "-n"], cwd=ROOT, capture_output=True, text=True, check=True)
-        self.assertIn("uv run python scripts/release.py", result.stdout)
+        self.assertIn("bun run dev", result.stdout)
         self.assertNotIn("virustotal.py", result.stdout)
 
 

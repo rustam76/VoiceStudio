@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BUDGET_TS = ROOT / "electron/src/shared/utils/generateBudget.ts"
+BUDGET_TS = ROOT / "frontend/src/shared/utils/generateBudget.ts"
 
 
 def test_reported_keys_are_ones_the_client_reads():
